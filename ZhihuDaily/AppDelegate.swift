@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let rootVC = window?.rootViewController as? ViewController {
             rootVC.container = persistentContainer
         }
-        return true 
+        return true 
     }
     // MARK: UISceneSession Lifecycle
 

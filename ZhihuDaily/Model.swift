@@ -25,9 +25,8 @@ class Top_Stories {
     var id = Int()
 }
 
-class Detail {
-    var array = [AnyObject]()
-    
+class test {
+    let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
+    lazy var  managedObjectContext = appDelegate.persistentContainer.viewContext
 }
 
-   
