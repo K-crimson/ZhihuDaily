@@ -1,8 +1,8 @@
 //
-//  Storie+CoreDataProperties.swift
+//  Story+CoreDataProperties.swift
 //  ZhihuDaily
 //
-//  Created by 车致远 on 2021/1/31.
+//  Created by 车致远 on 2021/2/6.
 //
 //
 
@@ -10,10 +10,10 @@ import Foundation
 import CoreData
 
 
-extension Storie {
+extension Story {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Storie> {
-        return NSFetchRequest<Storie>(entityName: "Storie")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Story> {
+        return NSFetchRequest<Story>(entityName: "Story")
     }
 
     @NSManaged public var date: Int32
@@ -25,6 +25,6 @@ extension Storie {
 
 }
 
-extension Storie : Identifiable {
+extension Story : Identifiable {
 
 }
