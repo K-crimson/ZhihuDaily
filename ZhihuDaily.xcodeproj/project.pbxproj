@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		048BE01A81717A286B0767A3 /* Pods_ZhihuDaily.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49F8C3739CD36A32262FCD82 /* Pods_ZhihuDaily.framework */; };
+		D1200C8025D01DD300DC3991 /* TopStory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1200C7E25D01DD300DC3991 /* TopStory+CoreDataClass.swift */; };
+		D1200C8125D01DD300DC3991 /* TopStory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1200C7F25D01DD300DC3991 /* TopStory+CoreDataProperties.swift */; };
 		D122284F25BDB48A006B3471 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D122284E25BDB48A006B3471 /* Model.swift */; };
 		D125ECC125CECC7600DD0705 /* Story+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D125ECBF25CECC7600DD0705 /* Story+CoreDataClass.swift */; };
 		D125ECC225CECC7600DD0705 /* Story+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D125ECC025CECC7600DD0705 /* Story+CoreDataProperties.swift */; };
@@ -23,6 +25,8 @@
 /* Begin PBXFileReference section */
 		49F8C3739CD36A32262FCD82 /* Pods_ZhihuDaily.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZhihuDaily.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A71FDB545BE7F8C451AE8D13 /* Pods-ZhihuDaily.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZhihuDaily.release.xcconfig"; path = "Target Support Files/Pods-ZhihuDaily/Pods-ZhihuDaily.release.xcconfig"; sourceTree = "<group>"; };
+		D1200C7E25D01DD300DC3991 /* TopStory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopStory+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		D1200C7F25D01DD300DC3991 /* TopStory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopStory+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		D122284E25BDB48A006B3471 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		D125ECBF25CECC7600DD0705 /* Story+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Story+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		D125ECC025CECC7600DD0705 /* Story+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Story+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
@@ -88,6 +92,8 @@
 		D15779C525BC45D600A94A50 /* ZhihuDaily */ = {
 			isa = PBXGroup;
 			children = (
+				D1200C7E25D01DD300DC3991 /* TopStory+CoreDataClass.swift */,
+				D1200C7F25D01DD300DC3991 /* TopStory+CoreDataProperties.swift */,
 				D125ECBF25CECC7600DD0705 /* Story+CoreDataClass.swift */,
 				D125ECC025CECC7600DD0705 /* Story+CoreDataProperties.swift */,
 				D15779C625BC45D600A94A50 /* AppDelegate.swift */,
@@ -221,9 +227,11 @@
 				D182BB5825BF002E0013F045 /* ZhihuDaily.xcdatamodeld in Sources */,
 				D15779CB25BC45D600A94A50 /* ViewController.swift in Sources */,
 				D15779C725BC45D600A94A50 /* AppDelegate.swift in Sources */,
+				D1200C8125D01DD300DC3991 /* TopStory+CoreDataProperties.swift in Sources */,
 				D15779C925BC45D600A94A50 /* SceneDelegate.swift in Sources */,
 				D122284F25BDB48A006B3471 /* Model.swift in Sources */,
 				D125ECC125CECC7600DD0705 /* Story+CoreDataClass.swift in Sources */,
+				D1200C8025D01DD300DC3991 /* TopStory+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

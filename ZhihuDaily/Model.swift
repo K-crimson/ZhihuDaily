@@ -11,7 +11,8 @@ import Foundation
 import SwiftyJSON
 
 
-var stories = Story()
+
+
 
 /// 读取Coredata中的数据
 /// - Returns: 返回数组形式的Story
@@ -31,10 +32,30 @@ func readStory() -> [Story] {
     return temp
 }
 
+func readTopStory() -> [TopStory] {
+    let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
+    let managedObjectContext = appDelegate.persistentContainer.viewContext
+    
+    
+    let entity: NSEntityDescription? =
+        NSEntityDescription.entity(forEntityName: "TopStory", in: managedObjectContext)
+    let request = NSFetchRequest<TopStory>(entityName: "TopStory")
+    var result: [AnyObject]?
+    request.fetchOffset = 0
+    request.entity = entity
+    result = try! managedObjectContext.fetch(request)
+    let temp = result as! [TopStory]
+    return temp
+}
+
+
 /// 获取当天的Story并存储至CoreData
 func writeLatestStory () {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedObjectContext = appDelegate.persistentContainer.viewContext
+    
+    
+    
     AF.request("https://news-at.zhihu.com/api/3/news/latest").responseJSON {
         response in
         switch response.result {
@@ -60,12 +81,26 @@ func writeLatestStory () {
                     if let images = story["images"].array {
                         newStory.image = images[0].stringValue
                     }
-                    
                     do {
                         try managedObjectContext.save()
                     } catch {
                         print("\(error)")
                     }
+                }
+            }
+            deleteAllTop()
+            let topstories = data["top_stories"].array!
+            for topstory in topstories {
+                let newTopStory = NSEntityDescription.insertNewObject(forEntityName: "TopStory", into: managedObjectContext) as! TopStory
+                newTopStory.title = topstory["title"].stringValue
+                newTopStory.image = topstory["image"].stringValue
+                newTopStory.url = topstory["url"].stringValue
+                newTopStory.id = topstory["id"].int32Value
+                
+                do {
+                    try managedObjectContext.save()
+                } catch {
+                    print("\(error)")
                 }
             }
             
@@ -145,6 +180,8 @@ func writePreviousStory () { //
 func deleteAllStory() {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedObjectContext = appDelegate.persistentContainer.viewContext
+    
+    
     let entity: NSEntityDescription? =
         NSEntityDescription.entity(forEntityName: "Story", in: managedObjectContext)
     let request = NSFetchRequest<Story>(entityName: "Story")
@@ -161,10 +198,32 @@ func deleteAllStory() {
         let error = error as NSError
         print(error)
     }
-
+    
 }
 
-
+func deleteAllTop() {
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    let managedObjectContext = appDelegate.persistentContainer.viewContext
+    
+    
+    let entity: NSEntityDescription? =
+        NSEntityDescription.entity(forEntityName: "TopStory", in: managedObjectContext)
+    let request = NSFetchRequest<TopStory>(entityName: "TopStory")
+    request.fetchOffset = 0
+    request.entity = entity
+    do{
+        let results:[AnyObject]? = try managedObjectContext.fetch(request)
+        for story: TopStory in results as! [TopStory]{
+            managedObjectContext.delete(story)
+        }
+        try managedObjectContext.save()
+        let _:[AnyObject]? = try managedObjectContext.fetch(request)
+    } catch {
+        let error = error as NSError
+        print(error)
+    }
+    
+}
 
 
 
