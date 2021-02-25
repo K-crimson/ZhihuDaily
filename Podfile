@@ -9,5 +9,5 @@ target 'ZhihuDaily' do
   pod 'Alamofire'
   pod 'SwiftyJSON'
   pod 'SnapKit'
-
+  pod 'FSPagerView'
 end

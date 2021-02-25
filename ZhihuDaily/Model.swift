@@ -62,6 +62,7 @@ func writeLatestStory () {
         case .success(let json):
             let data = JSON(json)
             var date = data["date"].int32Value
+            print(date)
             var hasBeenAdded = false
             for story in readStory() {
                 if story.date == date {
@@ -69,7 +70,7 @@ func writeLatestStory () {
                 }
             }
             if !hasBeenAdded {
-                let stories = data["stories"].array!
+                let stories = data["stories"].arrayValue
                 for story in stories {
                     let newStory = NSEntityDescription.insertNewObject(forEntityName: "Story", into: managedObjectContext) as! Story
                     
@@ -78,9 +79,13 @@ func writeLatestStory () {
                     newStory.id = story["id"].int32Value
                     newStory.title = story["title"].stringValue
                     newStory.url = story["url"].stringValue
-                    if let images = story["images"].array {
-                        newStory.image = images[0].stringValue
+//                    if let images = story["images"].array {
+//                        newStory.image = images[0].stringValue
+//                    }
+                    if let image = story["images"].arrayValue.first {
+                        newStory.image = image.stringValue
                     }
+                    
                     do {
                         try managedObjectContext.save()
                     } catch {
@@ -89,14 +94,14 @@ func writeLatestStory () {
                 }
             }
             deleteAllTop()
-            let topstories = data["top_stories"].array!
+            let topstories = data["top_stories"].arrayValue
             for topstory in topstories {
                 let newTopStory = NSEntityDescription.insertNewObject(forEntityName: "TopStory", into: managedObjectContext) as! TopStory
                 newTopStory.title = topstory["title"].stringValue
                 newTopStory.image = topstory["image"].stringValue
                 newTopStory.url = topstory["url"].stringValue
-                newTopStory.id = topstory["id"].int32Value
-                
+                newTopStory.hint = topstory["hint"].stringValue
+                newTopStory.id = topstory["id"].int32Value + 10000000
                 do {
                     try managedObjectContext.save()
                 } catch {
@@ -108,7 +113,8 @@ func writeLatestStory () {
         case .failure(let json):
             print(json.errorDescription)
         }
-        NotificationCenter.default.post(name: Notification.Name(rawValue: "newstoryLoaded"), object: nil, userInfo: nil)
+        
+        
 
     }
     
@@ -117,6 +123,7 @@ func writeLatestStory () {
     } catch {
         print("\(error)")
     }
+    NotificationCenter.default.post(name: Notification.Name(rawValue: "newstoryLoaded"), object: nil, userInfo: nil)
     
 }
 
@@ -130,8 +137,8 @@ func writePreviousStory () { //
        dates.append(storys.date)
    }
    var previousDate = String()
-   if let a = dates.min() {
-       previousDate = String(a)
+   if let datesMin = dates.min() {
+       previousDate = String(datesMin)
    } else {
        print("storysDate is empty")
    }
@@ -150,7 +157,7 @@ func writePreviousStory () { //
            }
            
            if !hasBeenAdded {
-               let stories = data["stories"].array!
+               let stories = data["stories"].arrayValue
                for story in stories {
                    let newStory = NSEntityDescription.insertNewObject(forEntityName: "Story", into: managedObjectContext) as! Story
                    newStory.date = date
@@ -158,9 +165,9 @@ func writePreviousStory () { //
                    newStory.id = story["id"].int32Value
                    newStory.title = story["title"].stringValue
                    newStory.url = story["url"].stringValue
-                   if let images = story["images"].array {
-                        newStory.image = images[0].stringValue
-                   }
+                    if let image = story["images"].arrayValue.first {
+                        newStory.image = image.stringValue
+                    }
                    do {
                        try managedObjectContext.save()
                    } catch {
@@ -187,8 +194,8 @@ func deleteAllStory() {
     let request = NSFetchRequest<Story>(entityName: "Story")
     request.fetchOffset = 0
     request.entity = entity
-    do{
-        let results:[AnyObject]? = try managedObjectContext.fetch(request)
+    do {
+        let results: [AnyObject]? = try managedObjectContext.fetch(request)
         for story: Story in results as! [Story]{
             managedObjectContext.delete(story)
         }
@@ -196,7 +203,6 @@ func deleteAllStory() {
         let _:[AnyObject]? = try managedObjectContext.fetch(request)
     } catch {
         let error = error as NSError
-        print(error)
     }
     
 }

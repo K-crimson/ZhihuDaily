@@ -1,24 +1,28 @@
 PODS:
   - Alamofire (5.4.1)
+  - FSPagerView (0.8.3)
   - SnapKit (5.0.1)
   - SwiftyJSON (5.0.0)
 
 DEPENDENCIES:
   - Alamofire
+  - FSPagerView
   - SnapKit
   - SwiftyJSON
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - FSPagerView
     - SnapKit
     - SwiftyJSON
 
 SPEC CHECKSUMS:
   Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
+  FSPagerView: 670405b2f18e2a87fa37f20b00de783e562c25a8
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
 
-PODFILE CHECKSUM: b36f38fc6c2c4a3cd09232a9825ed6f5192d98f9
+PODFILE CHECKSUM: 3b2e335a9639dc2da0ff1e8f61806e2b601671c4
 
 COCOAPODS: 1.10.1

@@ -9,6 +9,7 @@
         <attribute name="url" optional="YES" attributeType="String"/>
     </entity>
     <entity name="TopStory" representedClassName="TopStory" syncable="YES">
+        <attribute name="hint" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="image" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
@@ -16,6 +17,6 @@
     </entity>
     <elements>
         <element name="Story" positionX="160" positionY="192" width="128" height="119"/>
-        <element name="TopStory" positionX="162" positionY="234" width="128" height="89"/>
+        <element name="TopStory" positionX="162" positionY="234" width="128" height="104"/>
     </elements>
 </model>
