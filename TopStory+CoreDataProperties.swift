@@ -2,7 +2,7 @@
 //  TopStory+CoreDataProperties.swift
 //  ZhihuDaily
 //
-//  Created by 车致远 on 2021/2/7.
+//  Created by 车致远 on 2021/2/10.
 //
 //
 
@@ -17,9 +17,10 @@ extension TopStory {
     }
 
     @NSManaged public var id: Int32
-    @NSManaged public var url: String?
     @NSManaged public var image: String?
     @NSManaged public var title: String?
+    @NSManaged public var url: String?
+    @NSManaged public var hint: String?
 
 }
 
