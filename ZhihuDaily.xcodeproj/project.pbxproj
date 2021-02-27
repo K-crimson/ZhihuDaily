@@ -102,10 +102,10 @@
 				D15779CA25BC45D600A94A50 /* ViewController.swift */,
 				D111F9D825D4C12700F00A34 /* DetaiPageController.swift */,
 				D1AFBAF825E69C5000A5B95A /* TopPageController.swift */,
+				D122284E25BDB48A006B3471 /* Model.swift */,
 				D15779CF25BC45D700A94A50 /* Assets.xcassets */,
 				D15779D125BC45D700A94A50 /* LaunchScreen.storyboard */,
 				D15779D425BC45D700A94A50 /* Info.plist */,
-				D122284E25BDB48A006B3471 /* Model.swift */,
 				D15779CC25BC45D600A94A50 /* Main.storyboard */,
 				D182BB5625BF002E0013F045 /* ZhihuDaily.xcdatamodeld */,
 			);

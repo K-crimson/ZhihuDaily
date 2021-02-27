@@ -153,11 +153,11 @@ class TopController: UIViewController {
     var bottomBar = UIView()
     let backButton = UIButton()
     let line = UIView()
-    let comments = BannerButton()
+    let comments = bottomButton()
     let commentsNumber = UILabel()
-    let like = BannerButton()
+    let like = bottomButton()
     let likesNumber = likeNumber()
-    let star = BannerButton()
+    let star = bottomButton()
     let share = UIButton()
 
 
@@ -269,7 +269,7 @@ class TopController: UIViewController {
             make.left.equalTo(like.snp.right)
             make.size.equalTo(bottomBar.snp.height)
         })
-        star.addTarget(star, action: #selector(BannerButton.addStar(_:)), for: .touchUpInside)
+        star.addTarget(star, action: #selector(bottomButton.addStar(_:)), for: .touchUpInside)
 
 
 
@@ -315,7 +315,7 @@ extension TopController {
         dismiss(animated: false, completion: nil)
     }
 
-    @objc func addLike(_ button: BannerButton) {
+    @objc func addLike(_ button: bottomButton) {
         button.isClicked.toggle()
         if !button.isClicked {
             button.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)

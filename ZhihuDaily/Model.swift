@@ -60,6 +60,7 @@ func writeLatestStory () {
         response in
         switch response.result {
         case .success(let json):
+            
             let data = JSON(json)
             var date = data["date"].int32Value
             print(date)
@@ -109,6 +110,7 @@ func writeLatestStory () {
                 }
             }
             
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "newstoryLoaded"), object: nil, userInfo: nil)
             
         case .failure(let json):
             print(json.errorDescription)
@@ -123,7 +125,7 @@ func writeLatestStory () {
     } catch {
         print("\(error)")
     }
-    NotificationCenter.default.post(name: Notification.Name(rawValue: "newstoryLoaded"), object: nil, userInfo: nil)
+    
     
 }
 
@@ -175,10 +177,11 @@ func writePreviousStory () { //
                    }
                }
            }
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "newspaperLoaded"), object: nil, userInfo: nil)
        case .failure(let json):
            print(json.errorDescription)
        }
-       NotificationCenter.default.post(name: Notification.Name(rawValue: "newspaperLoaded"), object: nil, userInfo: nil)
+       
 
    }
 }

@@ -13,9 +13,14 @@ import CoreData
 import FSPagerView
 import WebKit
 
-class BannerButton: UIButton{
+
+/// 详情页底部的按钮
+class bottomButton: UIButton{
     var isClicked = false
 }
+
+
+/// 详情页底部点赞按钮的点赞数
 class likeNumber: UILabel {
     var isClicked = false
     var number = 3 {
@@ -72,15 +77,16 @@ class DetailController: UIViewController {
     var currentPage = 0
     var formerPage = 0
     let commentsNumber = UILabel()
+    
 
     
     
     var bottomBar = UIView()
     let backButton = UIButton()
     let line = UIView()
-    let comments = BannerButton()
-    let like = BannerButton()
-    let star = BannerButton()
+    let comments = bottomButton()
+    let like = bottomButton()
+    let star = bottomButton()
     let share = UIButton()
 
 
@@ -91,13 +97,7 @@ class DetailController: UIViewController {
     
     let likesNumber = likeNumber()
     
-    let url0 = URL(string: "https://daily.zhihu.com/story/9733101")!
-    let url1 = URL(string: "https://daily.zhihu.com/story/9732797")!
-    let url2 = URL(string: "https://daily.zhihu.com/story/9732718")!
-    let url4 = URL(string: "https://daily.zhihu.com/story/9732707")!
-
     var Urls = [URL]()
-//    var ids = [Int]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,13 +105,10 @@ class DetailController: UIViewController {
         first = true
         idPosition = ids.firstIndex(of: id) ?? 0
 //        print(id)
-        print(" asf whjidhgvlIUSFghwiou\(ids)")
-//        Urls = [url0,url1,url2,url3,url4]
-//        ids = [9732695,9732689,9732686,9732676,9732667,9732663,9732653]
+        
         webPages.append(webPage0)
         webPages.append(webPage1)
         webPages.append(webPage2)
-//        webPages.append(webPage3)
         webPage0.navigationDelegate = self
         webPage1.navigationDelegate = self
         webPage2.navigationDelegate = self
@@ -225,7 +222,7 @@ class DetailController: UIViewController {
             make.left.equalTo(like.snp.right)
             make.size.equalTo(bottomBar.snp.height)
         })
-        star.addTarget(star, action: #selector(BannerButton.addStar(_:)), for: .touchUpInside)
+        star.addTarget(star, action: #selector(bottomButton.addStar(_:)), for: .touchUpInside)
 
 
 
@@ -276,7 +273,7 @@ extension DetailController {
         dismiss(animated: false, completion: nil)
     }
     
-    @objc func addLike(_ button: BannerButton) {
+    @objc func addLike(_ button: bottomButton) {
         button.isClicked.toggle()
         if !button.isClicked {
             button.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
@@ -316,6 +313,13 @@ extension DetailController {
         downloadCommentsNumber(id)
     }
     
+//    TODO: 将复用机制中代码精简
+//    func loadNewPage(_ id:Int32) {
+//        let webPage = WKWebView()
+//        webPage.loadPage(id)
+//        webPage.navigationDelegate = self
+//    }
+    
     
     func readIds() {
         for stories in readStory() {
@@ -338,19 +342,19 @@ extension DetailController {
             switch response.result {
             case .success(let json):
                 let data = JSON(json)
-                var comments = data["comments"].stringValue
-                var likes = data["popularity"].intValue
+                let comments = data["comments"].stringValue
+                let likes = data["popularity"].intValue
                 self.likesNumber.number = likes
                 self.commentsNumber.text = comments
             case .failure(let json):
-                print(json.errorDescription)
+                print(json.errorDescription ?? "")
             }
         }
     }
 }
 
-extension BannerButton {
-    @objc func addStar(_ button: BannerButton) {
+extension bottomButton {
+    @objc func addStar(_ button: bottomButton) {
         button.isClicked.toggle()
         if button.isClicked == false {
             button.setImage(UIImage(systemName: "star"), for: .normal)
@@ -410,7 +414,7 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                     if index == 0 {
                         if first  {
                             id = ids[(ids.firstIndex(of: id) ?? 0) + 2]
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[2] = webPage
@@ -418,13 +422,13 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                         }else if first == false && formerAction != "left" {
                             id = ids[(ids.firstIndex(of: id) ?? 0) + 1]
                             print("a\(id)")
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.navigationDelegate = self
                             webPage.loadPage(id)
                             webPages[2] = webPage
                         } else if formerAction == "left" {
                             id = ids[(ids.firstIndex(of: id) ?? 0) + 3]
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[2] = webPage
@@ -432,7 +436,7 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                     } else if index == 1 {
                         if formerAction == "left" {
                             id = ids[(ids.firstIndex(of: id) ?? 0) + 3]
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[0] = webPage
@@ -440,7 +444,7 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                             id = ids[(ids.firstIndex(of: id) ?? 0) + 1]
                             print(id)
 
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[0] = webPage
