@@ -153,11 +153,11 @@ class TopController: UIViewController {
     var bottomBar = UIView()
     let backButton = UIButton()
     let line = UIView()
-    let comments = bottomButton()
+    let comments = BottomButton()
     let commentsNumber = UILabel()
-    let like = bottomButton()
-    let likesNumber = likeNumber()
-    let star = bottomButton()
+    let like = BottomButton()
+    let likesNumber = LikeNumber()
+    let star = BottomButton()
     let share = UIButton()
 
 
@@ -269,7 +269,7 @@ class TopController: UIViewController {
             make.left.equalTo(like.snp.right)
             make.size.equalTo(bottomBar.snp.height)
         })
-        star.addTarget(star, action: #selector(bottomButton.addStar(_:)), for: .touchUpInside)
+        star.addTarget(self, action: #selector(addStar(_:)), for: .touchUpInside)
 
 
 
@@ -315,18 +315,34 @@ extension TopController {
         dismiss(animated: false, completion: nil)
     }
 
-    @objc func addLike(_ button: bottomButton) {
+    @objc func addLike(_ button: BottomButton) {
         button.isClicked.toggle()
         if !button.isClicked {
             button.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
             button.tintColor = .black
             likesNumber.number -= 1
             likesNumber.textColor = .black
+            self.view.makeToast("取消点赞", duration: 2.0, position: .center)
         } else if button.isClicked{
             button.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
             button.tintColor = .blue
             likesNumber.number += 1
             likesNumber.textColor = .blue
+            self.view.makeToast("点赞成功", duration: 2.0, position: .center)
+        }
+    }
+    
+    @objc func addStar(_ button: BottomButton) {
+        button.isClicked.toggle()
+        if button.isClicked == false {
+            button.setImage(UIImage(systemName: "star"), for: .normal)
+            button.tintColor = .black
+            self.view.makeToast("取消收藏", duration: 2.0, position: .center)
+        } else if button.isClicked == true{
+            button.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            button.tintColor = .blue
+            self.view.makeToast("收藏成功", duration: 2.0, position: .center)
+
         }
     }
 

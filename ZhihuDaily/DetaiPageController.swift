@@ -12,16 +12,16 @@ import SwiftyJSON
 import CoreData
 import FSPagerView
 import WebKit
-
+import Toast_Swift
 
 /// 详情页底部的按钮
-class bottomButton: UIButton{
+class BottomButton: UIButton{
     var isClicked = false
 }
 
 
 /// 详情页底部点赞按钮的点赞数
-class likeNumber: UILabel {
+class LikeNumber: UILabel {
     var isClicked = false
     var number = 3 {
         didSet {
@@ -77,16 +77,15 @@ class DetailController: UIViewController {
     var currentPage = 0
     var formerPage = 0
     let commentsNumber = UILabel()
-    
 
     
     
     var bottomBar = UIView()
     let backButton = UIButton()
     let line = UIView()
-    let comments = bottomButton()
-    let like = bottomButton()
-    let star = bottomButton()
+    let comments = BottomButton()
+    let like = BottomButton()
+    let star = BottomButton()
     let share = UIButton()
 
 
@@ -95,7 +94,7 @@ class DetailController: UIViewController {
     let detailPage = UIView()
     let config = WKWebViewConfiguration()
     
-    let likesNumber = likeNumber()
+    let likesNumber = LikeNumber()
     
     var Urls = [URL]()
     
@@ -222,7 +221,7 @@ class DetailController: UIViewController {
             make.left.equalTo(like.snp.right)
             make.size.equalTo(bottomBar.snp.height)
         })
-        star.addTarget(star, action: #selector(bottomButton.addStar(_:)), for: .touchUpInside)
+        star.addTarget(self, action: #selector(addStar(_:)), for: .touchUpInside)
 
 
 
@@ -273,18 +272,33 @@ extension DetailController {
         dismiss(animated: false, completion: nil)
     }
     
-    @objc func addLike(_ button: bottomButton) {
+    @objc func addLike(_ button: BottomButton) {
         button.isClicked.toggle()
         if !button.isClicked {
             button.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
             button.tintColor = .black
             likesNumber.number -= 1
             likesNumber.textColor = .black
+            self.view.makeToast("取消点赞", duration: 2.0, position: .center)
         } else if button.isClicked{
             button.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
             button.tintColor = .blue
             likesNumber.number += 1
             likesNumber.textColor = .blue
+            self.view.makeToast("点赞成功", duration: 2.0, position: .center)
+        }
+    }
+    
+    @objc func addStar(_ button: BottomButton) {
+        button.isClicked.toggle()
+        if button.isClicked == false {
+            button.setImage(UIImage(systemName: "star"), for: .normal)
+            button.tintColor = .black
+            self.view.makeToast("取消收藏", duration: 2.0, position: .center)
+        } else if button.isClicked == true{
+            button.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            button.tintColor = .blue
+            self.view.makeToast("收藏成功", duration: 2.0, position: .center)
         }
     }
     
@@ -293,9 +307,9 @@ extension DetailController {
         var url1 = URL(string: "aaa")!
         var url2 = URL(string: "aaa")!
         if idPosition == 0 {
-            url0 = URL(string: "https://daily.zhihu.com/story/\(ids[idPosition + 1])")!
-            url1 = URL(string: "https://daily.zhihu.com/story/\(ids[idPosition + 2])")!
-            url2 = URL(string: "https://daily.zhihu.com/story/\(ids[idPosition + 3])")!
+            url0 = URL(string: "https://daily.zhihu.com/story/\(id)")!
+            url1 = URL(string: "https://daily.zhihu.com/story/\(ids[idPosition + 1])")!
+            url2 = URL(string: "https://daily.zhihu.com/story/\(ids[idPosition + 2])")!
         } else {
             url0 = URL(string: "https://daily.zhihu.com/story/\(id)")!
             url1 = URL(string: "https://daily.zhihu.com/story/\(ids[idPosition + 1])")!
@@ -353,17 +367,8 @@ extension DetailController {
     }
 }
 
-extension bottomButton {
-    @objc func addStar(_ button: bottomButton) {
-        button.isClicked.toggle()
-        if button.isClicked == false {
-            button.setImage(UIImage(systemName: "star"), for: .normal)
-            button.tintColor = .black
-        } else if button.isClicked == true{
-            button.setImage(UIImage(systemName: "star.fill"), for: .normal)
-            button.tintColor = .blue
-        }
-    }
+extension BottomButton {
+    
 }
 
 extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
@@ -408,47 +413,49 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
 //
         if flip {
             if right {
-                if ids.firstIndex(of: id) == 0 {
-                    
-                } else {
-                    if index == 0 {
-                        if first  {
-                            id = ids[(ids.firstIndex(of: id) ?? 0) + 2]
-                            let webPage = WKWebView()
-                            webPage.loadPage(id)
-                            webPage.navigationDelegate = self
-                            webPages[2] = webPage
-                            first = false
-                        }else if first == false && formerAction != "left" {
-                            id = ids[(ids.firstIndex(of: id) ?? 0) + 1]
-                            print("a\(id)")
-                            let webPage = WKWebView()
-                            webPage.navigationDelegate = self
-                            webPage.loadPage(id)
-                            webPages[2] = webPage
-                        } else if formerAction == "left" {
-                            id = ids[(ids.firstIndex(of: id) ?? 0) + 3]
-                            let webPage = WKWebView()
-                            webPage.loadPage(id)
-                            webPage.navigationDelegate = self
-                            webPages[2] = webPage
-                        }
-                    } else if index == 1 {
-                        if formerAction == "left" {
-                            id = ids[(ids.firstIndex(of: id) ?? 0) + 3]
-                            let webPage = WKWebView()
-                            webPage.loadPage(id)
-                            webPage.navigationDelegate = self
-                            webPages[0] = webPage
+                if index == 0 {
+                    if first  {
+                        id = ids[(ids.firstIndex(of: id) ?? 0) + 2]
+                        let webPage = WKWebView()
+                        webPage.loadPage(id)
+                        webPage.navigationDelegate = self
+                        webPages[2] = webPage
+                        first = false
+                    }else if first == false && formerAction != "left" {
+                        id = ids[(ids.firstIndex(of: id) ?? 0) + 1]
+                        print("a\(id)")
+                        let webPage = WKWebView()
+                        webPage.navigationDelegate = self
+                        webPage.loadPage(id)
+                        webPages[2] = webPage
+                    } else if formerAction == "left" {
+                        if ids.firstIndex(of: id) == 2{
+                            id = ids[(ids.firstIndex(of: id) ?? 0)]
                         } else {
-                            id = ids[(ids.firstIndex(of: id) ?? 0) + 1]
-                            print(id)
+                            id = ids[(ids.firstIndex(of: id) ?? 0) + 3]
 
-                            let webPage = WKWebView()
-                            webPage.loadPage(id)
-                            webPage.navigationDelegate = self
-                            webPages[0] = webPage
                         }
+                        let webPage = WKWebView()
+                        webPage.loadPage(id)
+                        webPage.navigationDelegate = self
+                        webPages[2] = webPage
+                    }
+                } else if index == 1 {
+                    if formerAction == "left" {
+                        id = ids[(ids.firstIndex(of: id) ?? 0) + 3]
+                        let webPage = WKWebView()
+                        webPage.loadPage(id)
+                        webPage.navigationDelegate = self
+                        webPages[0] = webPage
+                    } else {
+                        id = ids[(ids.firstIndex(of: id) ?? 0) + 1]
+                        print(id)
+
+                        let webPage = WKWebView()
+                        webPage.loadPage(id)
+                        webPage.navigationDelegate = self
+                        webPages[0] = webPage
+                    }
                         
                     } else if index == 2 {
                         if formerAction == "left" {
@@ -467,7 +474,7 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                         }
 
                     }
-                }
+                
                 formerAction = "right"
             }
             if !right {
@@ -475,7 +482,11 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                 } else {
                     if index == 0 {
                         if first {
-                            id = ids[(ids.firstIndex(of: id) ?? 0) - 2]
+                            if ids.firstIndex(of: id) == 1 {
+                                id = ids[(ids.firstIndex(of: id) ?? 0) - 1]
+                            } else {
+                                id = ids[(ids.firstIndex(of: id) ?? 0) - 2]
+                            }
                             var webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
@@ -497,7 +508,12 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                         }
                     } else if index == 1 {
                         if formerAction == "right" {
-                            id = ids[(ids.firstIndex(of: id) ?? 0) - 3]
+                            if ids.firstIndex(of: id) == 2 {
+//                                id = ids[(ids.firstIndex(of: id) ?? 0) + 1]
+                                
+                            } else {
+                                id = ids[(ids.firstIndex(of: id) ?? 0) - 3]
+                            }
                             print(id)
                             var webPage = WKWebView()
                             webPage.loadPage(id)

@@ -11,7 +11,7 @@ import Alamofire
 import SwiftyJSON
 import CoreData
 import FSPagerView
-
+import  ESPullToRefresh
 
 
 
@@ -72,7 +72,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         writeLatestStory()
-        writePreviousStory()
 //        deleteAllStory()
 //        deleteAllTop()
         NotificationCenter.default.addObserver(self, selector: #selector(reloaddata), name: Notification.Name(rawValue: "newspaperLoaded"), object: nil)
@@ -183,6 +182,7 @@ class ViewController: UIViewController {
         
         
         mainTableView.addSubview(bannerView)
+        bannerView.backgroundColor = .white
         bannerView.addSubview(banner)
         bannerView.addSubview(pageControl)
         bannerView.snp.makeConstraints({make -> Void in
@@ -212,27 +212,7 @@ class ViewController: UIViewController {
         pageControl.setFillColor(.gray, for: .normal)
         pageControl.setFillColor(.white, for: .selected)
         
-        for TopStory in topStories {
-            if let image = readImage(of: TopStory.id) {
-                if !topImages.contains(image) {
-                    topImages.append(image)
-                }
-            }
-            if let title = TopStory.title {
-                if !topTitles.contains(title) {
-                    topTitles.append(title)
-                }
-            }
-            if let hint = TopStory.hint {
-                if !topHints.contains(hint) {
-                    topHints.append(hint)
-                }
-            }
-            if !topIds.contains(TopStory.id) {
-                topIds.append(TopStory.id)
-            }
-        }
-
+        
         do {
             mainTableView.snp.makeConstraints( { make -> Void in
                 make.width.equalToSuperview()
@@ -247,53 +227,63 @@ class ViewController: UIViewController {
         mainTableView.backgroundColor = .white
 
         
-        
-//        storeImage()
-        for top in readTopStory() {
-            print(top.hint)
-        }
-        
-        
-       
-        //将CoreData中date的值存入集合中，以获得无重复的日期值
+        storeImage()
+//将CoreData中date的值存入集合中，以获得无重复的日期值
         var groups = Set<Int32>()
         for story in readStory() {
             groups.insert(story.date)
         }
         keys = groups.sorted(by: >)
         //将CoreData中的元素按相同日期归至同一数组
-        var emptyStory = Story()
-        if let empty = readStory().first {
-            emptyStory = empty
-        }
-//        emptyStory.id = 1
+            
         
-        
-        
+//      向浏览列表的数组填充数据
         readStory().forEach { story in
             stories[story.date, default: []].append(story)
         }
         
-//        此处可能出现数组溢出
         
-//            stories[keys[0]]?.insert(emptyStory, at: 0)
-        
-        for key in keys {
-            var month,date: String
-            let monthNumber = key / 100 % 100
-            if monthNumber < 10{
-                month = String(monthNumber % 10)
-            } else {
-                month = String(monthNumber)
-            }
-            let dateNumber = key%100
-            if dateNumber < 10 {
-                date = String(dateNumber % 10)
-            } else {
-                date = String(dateNumber)
-            }
-            dates.append("\(month)月\(date)日")
+//        向banner的数组填充数据
+        for TopStory in topStories {
+           if let image = readImage(of: TopStory.id) {
+               if !topImages.contains(image) {
+                   topImages.append(image)
+               }
+           }
+           if let title = TopStory.title {
+               if !topTitles.contains(title) {
+                   topTitles.append(title)
+               }
+           }
+           if let hint = TopStory.hint {
+               if !topHints.contains(hint) {
+                   topHints.append(hint)
+               }
+           }
+           if !topIds.contains(TopStory.id) {
+               topIds.append(TopStory.id)
+           }
         }
+        
+//        向header的日期数组中填充数据
+        for key in keys {
+           var month,date: String
+           let monthNumber = key / 100 % 100
+           if monthNumber < 10{
+               month = String(monthNumber % 10)
+           } else {
+               month = String(monthNumber)
+           }
+           let dateNumber = key % 100
+           if dateNumber < 10 {
+               date = String(dateNumber % 10)
+           } else {
+               date = String(dateNumber)
+           }
+           dates.append("\(month)月\(date)日")
+       }
+        
+       
         
        print(topIds)
         
@@ -341,7 +331,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return newHeaderForSection(String(dates[section]), section)
+        if dates.isEmpty {
+            return UIView()
+        } else {
+            return newHeaderForSection(String(dates[section]), section)
+        }
     }
     
     
@@ -371,13 +365,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         if cell == nil {
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: identifer)
         }
-//        if indexPath.row == 0 && indexPath.section == 0 {
-//            cell?.textLabel?.text = ""
-//            return cell!
-//        }
         if indexPath.section == 0 {
             if indexPath.row == 0 {
-//                cell?.textLabel?.text = ""
                 return cell!
             } else {
                 let index = indexPath.row - 1
@@ -571,7 +560,7 @@ extension ViewController {
             if let link = story.image {
                 imageView.downloadedFrom(link: link)
             }else {
-                print("imageUrl in storie is empty")
+                print("imageUrlin storie is empty")
             }
             /// TODO: 此处存储图片使用了延时执行 使图片在进行保存前下载成功 后续需改进
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {

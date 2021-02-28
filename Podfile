@@ -10,4 +10,6 @@ target 'ZhihuDaily' do
   pod 'SwiftyJSON'
   pod 'SnapKit'
   pod 'FSPagerView'
+  pod 'Toast-Swift', '~> 5.0.1'
+  pod "ESPullToRefresh"
 end

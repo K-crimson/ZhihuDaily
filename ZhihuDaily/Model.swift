@@ -210,6 +210,7 @@ func deleteAllStory() {
     
 }
 
+
 func deleteAllTop() {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedObjectContext = appDelegate.persistentContainer.viewContext
@@ -234,7 +235,9 @@ func deleteAllTop() {
     
 }
 
-
+func postNotification(_ notification: String) {
+    NotificationCenter.default.post(name: Notification.Name(notification), object: nil)
+}
 
 
 
