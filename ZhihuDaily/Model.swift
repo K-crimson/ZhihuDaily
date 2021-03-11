@@ -27,7 +27,11 @@ func readStory() -> [Story] {
     var result: [AnyObject]?
     request.fetchOffset = 0
     request.entity = entity
-    result = try! managedObjectContext.fetch(request)
+    do {
+        result = try managedObjectContext.fetch(request)
+    } catch {
+        print("\(error)")
+    }
     let temp = result as! [Story]
     return temp
 }
@@ -43,7 +47,11 @@ func readTopStory() -> [TopStory] {
     var result: [AnyObject]?
     request.fetchOffset = 0
     request.entity = entity
-    result = try! managedObjectContext.fetch(request)
+    do {
+        result = try managedObjectContext.fetch(request)
+    } catch {
+        print("\(error)")
+    }
     let temp = result as! [TopStory]
     return temp
 }
@@ -63,7 +71,6 @@ func writeLatestStory () {
             
             let data = JSON(json)
             var date = data["date"].int32Value
-            print(date)
             var hasBeenAdded = false
             for story in readStory() {
                 if story.date == date {
@@ -93,97 +100,161 @@ func writeLatestStory () {
                         print("\(error)")
                     }
                 }
-            }
-            deleteAllTop()
-            let topstories = data["top_stories"].arrayValue
-            for topstory in topstories {
-                let newTopStory = NSEntityDescription.insertNewObject(forEntityName: "TopStory", into: managedObjectContext) as! TopStory
-                newTopStory.title = topstory["title"].stringValue
-                newTopStory.image = topstory["image"].stringValue
-                newTopStory.url = topstory["url"].stringValue
-                newTopStory.hint = topstory["hint"].stringValue
-                newTopStory.id = topstory["id"].int32Value + 10000000
-                do {
-                    try managedObjectContext.save()
-                } catch {
-                    print("\(error)")
-                }
+                postNotification("latestLoaded")
             }
             
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "newstoryLoaded"), object: nil, userInfo: nil)
+            
+            let topstories = data["top_stories"].arrayValue
+            var topHasBeenAdded = false
+            for topstory in topstories {
+                for top in readTopStory() {
+                    if topstory["title"].stringValue == top.title {
+                        topHasBeenAdded = true
+                    }
+                }
+            }
+            if !topHasBeenAdded {
+                for topstory in topstories {
+                    let newTopStory = NSEntityDescription.insertNewObject(forEntityName: "TopStory", into: managedObjectContext) as! TopStory
+                    newTopStory.title = topstory["title"].stringValue
+                    newTopStory.image = topstory["image"].stringValue
+                    newTopStory.url = topstory["url"].stringValue
+                    newTopStory.hint = topstory["hint"].stringValue
+                    newTopStory.id = topstory["id"].int32Value + 10000000
+                }
+                postNotification("topLoaded")
+            }
+
+            do {
+                try managedObjectContext.save()
+            } catch {
+                print("\(error)")
+            }
             
         case .failure(let json):
             print(json.errorDescription)
         }
-        
-        
-
     }
-    
     do {
         try managedObjectContext.save()
     } catch {
         print("\(error)")
     }
-    
-    
 }
 
 /// 获取先前的Story并存储至CoreData
 func writePreviousStory () { //
    let appDelegate = UIApplication.shared.delegate as! AppDelegate
    let managedObjectContext = appDelegate.persistentContainer.viewContext
+    var previousDate = String()
 
-   var dates = [Int32]()
-   for storys in readStory() {
-       dates.append(storys.date)
-   }
-   var previousDate = String()
-   if let datesMin = dates.min() {
-       previousDate = String(datesMin)
-   } else {
-       print("storysDate is empty")
-   }
-   print("previousdate is \(previousDate)")
-   AF.request("https://news-at.zhihu.com/api/3/stories/before/\(previousDate)").responseJSON {
-       response in
-       switch response.result {
-       case .success(let json):
-           let data = JSON(json)
-           var date = data["date"].int32Value
-           var hasBeenAdded = false
-           for story in readStory() {
-               if story.date == date {
-                   hasBeenAdded = true
-               }
-           }
-           
-           if !hasBeenAdded {
-               let stories = data["stories"].arrayValue
-               for story in stories {
-                   let newStory = NSEntityDescription.insertNewObject(forEntityName: "Story", into: managedObjectContext) as! Story
-                   newStory.date = date
-                   newStory.hint = story["hint"].stringValue
-                   newStory.id = story["id"].int32Value
-                   newStory.title = story["title"].stringValue
-                   newStory.url = story["url"].stringValue
-                    if let image = story["images"].arrayValue.first {
-                        newStory.image = image.stringValue
+    if !readStory().isEmpty {
+        var dates = [Int32]()
+        for storys in readStory() {
+            dates.append(storys.date)
+        }
+        if let datesMin = dates.min() {
+            previousDate = String(datesMin)
+        } else {
+            print("storysDate is empty")
+        }
+        AF.request("https://news-at.zhihu.com/api/3/stories/before/\(previousDate)").responseJSON {
+            response in
+            switch response.result {
+            case .success(let json):
+                let data = JSON(json)
+                var date = data["date"].int32Value
+                var hasBeenAdded = false
+                for story in readStory() {
+                    if story.date == date {
+                        hasBeenAdded = true
                     }
-                   do {
-                       try managedObjectContext.save()
-                   } catch {
-                       print("\(error)")
-                   }
-               }
-           }
-        NotificationCenter.default.post(name: Notification.Name(rawValue: "newspaperLoaded"), object: nil, userInfo: nil)
-       case .failure(let json):
-           print(json.errorDescription)
-       }
-       
+                }
+                
+                if !hasBeenAdded {
+                    let stories = data["stories"].arrayValue
+                    for story in stories {
+                        let newStory = NSEntityDescription.insertNewObject(forEntityName: "Story", into: managedObjectContext) as! Story
+                        newStory.date = date
+                        newStory.hint = story["hint"].stringValue
+                        newStory.id = story["id"].int32Value
+                        newStory.title = story["title"].stringValue
+                        newStory.url = story["url"].stringValue
+                         if let image = story["images"].arrayValue.first {
+                             newStory.image = image.stringValue
+                         }
+                        do {
+                            try managedObjectContext.save()
+                        } catch {
+                            print("\(error)")
+                        }
+                    }
+                 postNotification("previousLoaded")
+                }
+            case .failure(let json):
+                print(json.errorDescription)
+            }
+            
 
-   }
+        }
+    } else {
+        AF.request("https://news-at.zhihu.com/api/3/news/latest").responseJSON {
+            response in
+            switch response.result {
+            case .success(let json):
+                let data = JSON(json)
+                var date = data["date"].int32Value
+                previousDate = String(date)
+                AF.request("https://news-at.zhihu.com/api/3/stories/before/\(previousDate)").responseJSON {
+                    response in
+                    switch response.result {
+                    case .success(let json):
+                        let data = JSON(json)
+                        var date = data["date"].int32Value
+                        var hasBeenAdded = false
+                        for story in readStory() {
+                            if story.date == date {
+                                hasBeenAdded = true
+                            }
+                        }
+                        
+                        if !hasBeenAdded {
+                            let stories = data["stories"].arrayValue
+                            for story in stories {
+                                let newStory = NSEntityDescription.insertNewObject(forEntityName: "Story", into: managedObjectContext) as! Story
+                                newStory.date = date
+                                newStory.hint = story["hint"].stringValue
+                                newStory.id = story["id"].int32Value
+                                newStory.title = story["title"].stringValue
+                                newStory.url = story["url"].stringValue
+                                 if let image = story["images"].arrayValue.first {
+                                     newStory.image = image.stringValue
+                                 }
+                                do {
+                                    try managedObjectContext.save()
+                                } catch {
+                                    print("\(error)")
+                                }
+                            }
+                         postNotification("previousLoaded")
+                         
+                         
+                         
+                        }
+                    case .failure(let json):
+                        print(json.errorDescription)
+                    }
+                    
+
+                }
+            case.failure(let json):
+                print(json.errorDescription)
+            }
+        }
+        
+    }
+    
+   
 }
 
 

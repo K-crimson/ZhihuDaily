@@ -54,15 +54,32 @@ class ViewController: UIViewController {
     var topHints = [String]()
     var topIds = [Int32]()
     
-    @objc func reloaddata() {
+    @objc func reloadData() {
+        topStories = readTopStory()
+        loadData()
         storeImage()
         mainTableView.reloadData()
-        banner.reloadData()
-        NotificationCenter.default.post(name: Notification.Name("reloaded"), object: nil)
+//        print("topis\(topStories)")
+//        banner.reloadData()
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+//            self.loadData()
+//            self.banner.reloadData()
+//        }
     }
-    @objc func reloadDataAgain() {
-        mainTableView.reloadData()
+    
+    var imageLoaded = 0
+    
+    
+    
+    @objc func reloadTopData() {
+//        if imageLoaded < 5 {
+            topStories = readTopStory()
+            loadData()
+            print(topImages)
+            print(topIds)
         banner.reloadData()
+        mainTableView.reloadData()
+
     }
     
     
@@ -71,11 +88,6 @@ class ViewController: UIViewController {
         
         super.viewDidLoad()
         
-        writeLatestStory()
-//        deleteAllStory()
-//        deleteAllTop()
-        NotificationCenter.default.addObserver(self, selector: #selector(reloaddata), name: Notification.Name(rawValue: "newspaperLoaded"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadDataAgain), name: Notification.Name(rawValue: "reloaded"), object: nil)
         
         view.addSubview(mainTableView)
         view.addSubview(navigationBar)
@@ -104,52 +116,100 @@ class ViewController: UIViewController {
             make.centerY.equalTo(navigationDate).offset(20)
             make.height.equalToSuperview()
         })
+        
         date = 0
-        for story in readStory() {
-            if story.date > date {
-                date = story.date
+        AF.request("https://news-at.zhihu.com/api/3/news/latest").responseJSON { [self]
+            response in
+            switch response.result {
+            case .success(let json):
+                let data = JSON(json)
+                self.date = data["date"].int32Value
+                var month = Int32()
+                if date / 100 % 100 < 10 {
+                    month = date / 100 % 100 % 10
+                } else {
+                    month = date / 100
+                }
+                switch month {
+                case 1:
+                    navigationMonth.text = "一月"
+                case 2:
+                    navigationMonth.text = "二月"
+                case 3:
+                    navigationMonth.text = "三月"
+                case 4:
+                    navigationMonth.text = "四月"
+                case 5:
+                    navigationMonth.text = "五月"
+                case 6:
+                    navigationMonth.text = "六月"
+                case 7:
+                    navigationMonth.text = "七月"
+                case 8:
+                    navigationMonth.text = "八月"
+                case 9:
+                    navigationMonth.text = "九月"
+                case 10:
+                    navigationMonth.text = "十月"
+                case 11:
+                    navigationMonth.text = "十一月"
+                case 12:
+                    navigationMonth.text = "十二月"
+                default:
+                    navigationMonth.text = ""
+                }
+                
+                if date % 100 < 10 {
+                    navigationDate.text = String((date % 100) % 10)
+                } else {
+                    navigationDate.text = String((date % 100))
+                }
+            case .failure(let json):
+                print(json.errorDescription!)
+                
+                let strys = readStory()
+                date = strys.min(by: {s1, s2 in s1.date > s2.date })?.date ?? 0
+                var month = Int32()
+                if date / 100 % 100 < 10 {
+                    month = date / 100 % 100 % 10
+                } else {
+                    month = date / 100
+                }
+                switch month {
+                case 1:
+                    navigationMonth.text = "一月"
+                case 2:
+                    navigationMonth.text = "二月"
+                case 3:
+                    navigationMonth.text = "三月"
+                case 4:
+                    navigationMonth.text = "四月"
+                case 5:
+                    navigationMonth.text = "五月"
+                case 6:
+                    navigationMonth.text = "六月"
+                case 7:
+                    navigationMonth.text = "七月"
+                case 8:
+                    navigationMonth.text = "八月"
+                case 9:
+                    navigationMonth.text = "九月"
+                case 10:
+                    navigationMonth.text = "十月"
+                case 11:
+                    navigationMonth.text = "十一月"
+                case 12:
+                    navigationMonth.text = "十二月"
+                default:
+                    navigationMonth.text = ""
+                }
+                
+                if date % 100 < 10 {
+                    navigationDate.text = String((date % 100) % 10)
+                } else {
+                    navigationDate.text = String((date % 100))
+                }
             }
-        }
-        
-        var month = Int32()
-        if date / 100 % 100 < 10 {
-            month = date / 100 % 100 % 10
-        } else {
-            month = date / 100
-        }
-        switch month {
-        case 1:
-            navigationMonth.text = "一月"
-        case 2:
-            navigationMonth.text = "二月"
-        case 3:
-            navigationMonth.text = "三月"
-        case 4:
-            navigationMonth.text = "四月"
-        case 5:
-            navigationMonth.text = "五月"
-        case 6:
-            navigationMonth.text = "六月"
-        case 7:
-            navigationMonth.text = "七月"
-        case 8:
-            navigationMonth.text = "八月"
-        case 9:
-            navigationMonth.text = "九月"
-        case 10:
-            navigationMonth.text = "十月"
-        case 11:
-            navigationMonth.text = "十一月"
-        case 12:
-            navigationMonth.text = "十二月"
-        default:
-            navigationMonth.text = ""
-        }
-        
-        if date % 100 < 10 {
-            navigationDate.text = String((date % 100) % 10)
-        } else {
-            navigationDate.text = String((date % 100))
         }
         
         navigationDate.font = UIFont.systemFont(ofSize: 18, weight: .heavy)
@@ -225,67 +285,26 @@ class ViewController: UIViewController {
         mainTableView.separatorStyle = .none
         mainTableView.contentInsetAdjustmentBehavior = .never
         mainTableView.backgroundColor = .white
+////
+        writeLatestStory()
+        writePreviousStory()
+//            deleteAllStory()
+//            deleteAllTop()
+
+        loadData()
+        storeImage()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name(rawValue: "previousLoaded"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "imageLoaded"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "topLoaded"), object: nil)
 
         
-        storeImage()
-//将CoreData中date的值存入集合中，以获得无重复的日期值
-        var groups = Set<Int32>()
-        for story in readStory() {
-            groups.insert(story.date)
-        }
-        keys = groups.sorted(by: >)
-        //将CoreData中的元素按相同日期归至同一数组
-            
-        
-//      向浏览列表的数组填充数据
-        readStory().forEach { story in
-            stories[story.date, default: []].append(story)
-        }
+
+//        NotificationCenter.default.addObserver(self, selector: #selector(reloaddata), name: Notification.Name(rawValue: "newspaperLoaded"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(reloadDataAgain), name: Notification.Name(rawValue: "reloaded"), object: nil)
         
         
-//        向banner的数组填充数据
-        for TopStory in topStories {
-           if let image = readImage(of: TopStory.id) {
-               if !topImages.contains(image) {
-                   topImages.append(image)
-               }
-           }
-           if let title = TopStory.title {
-               if !topTitles.contains(title) {
-                   topTitles.append(title)
-               }
-           }
-           if let hint = TopStory.hint {
-               if !topHints.contains(hint) {
-                   topHints.append(hint)
-               }
-           }
-           if !topIds.contains(TopStory.id) {
-               topIds.append(TopStory.id)
-           }
-        }
         
-//        向header的日期数组中填充数据
-        for key in keys {
-           var month,date: String
-           let monthNumber = key / 100 % 100
-           if monthNumber < 10{
-               month = String(monthNumber % 10)
-           } else {
-               month = String(monthNumber)
-           }
-           let dateNumber = key % 100
-           if dateNumber < 10 {
-               date = String(dateNumber % 10)
-           } else {
-               date = String(dateNumber)
-           }
-           dates.append("\(month)月\(date)日")
-       }
-        
-       
-        
-       print(topIds)
         
     }
     
@@ -473,7 +492,7 @@ extension ViewController: FSPagerViewDelegate, FSPagerViewDataSource {
         page.addSubview(imageView)
         page.addSubview(title)
         page.addSubview(hint)
-        imageView.image = topImages.isEmpty ? UIImage() : topImages[index]
+        imageView.image = topImages.isEmpty ? UIImage(named: "white") : topImages[index]
         hint.text = topHints.isEmpty ? "" : topHints[index]
         title.text = topHints.isEmpty ? "" : topTitles[index]
         imageView.snp.makeConstraints({make -> Void in
@@ -553,44 +572,135 @@ extension UIImageView {
 
 extension ViewController {
     
+    func loadData() {
+        //      将CoreData中date的值存入集合中，以获得无重复的日期值
+                var groups = Set<Int32>()
+                for story in readStory() {
+                    groups.insert(story.date)
+                }
+                keys = groups.sorted(by: >)
+                //将CoreData中的元素按相同日期归至同一数组
+                    
+                
+        //      向浏览列表的数组填充数据
+                if stories.isEmpty {
+                    readStory().forEach { story in
+                        stories[story.date, default: []].append(story)
+                    }
+                } else {
+                    var storiesToBeUpdate = [Story]()
+                    for story in readStory() {
+                        if !stories.keys.contains(story.date) {
+                            storiesToBeUpdate.append(story)
+                        }
+                    }
+                    for story in storiesToBeUpdate {
+                        stories[story.date] = []
+                    }
+                    for story in storiesToBeUpdate {
+                        stories[story.date]?.append(story)
+                    }
+                }
+                
+                
+                
+        //        向banner的数组填充数据
+                for TopStory in topStories {
+                   if let image = readImage(of: TopStory.id) {
+                    if topImages.count < 5 {
+                           topImages.append(image)
+                       }
+                   }
+                   if let title = TopStory.title {
+                       if !topTitles.contains(title) {
+                           topTitles.append(title)
+                       }
+                   }
+                   if let hint = TopStory.hint {
+                       if !topHints.contains(hint) {
+                           topHints.append(hint)
+                       }
+                   }
+                   if !topIds.contains(TopStory.id) {
+                       topIds.append(TopStory.id)
+                   }
+                }
+                
+        //        向header的日期数组中填充数据
+                for key in keys {
+                   var month,date: String
+                   let monthNumber = key / 100 % 100
+                   if monthNumber < 10{
+                       month = String(monthNumber % 10)
+                   } else {
+                       month = String(monthNumber)
+                   }
+                   let dateNumber = key % 100
+                   if dateNumber < 10 {
+                       date = String(dateNumber % 10)
+                   } else {
+                       date = String(dateNumber)
+                   }
+                   dates.append("\(month)月\(date)日")
+               }
+    }
+    
+    
     /// 将图片以Story的id.jpg为文件名进行存储
     func storeImage() {
         for story in readStory() {
-            var imageView = UIImageView()
+            let imageView = UIImageView()
             if let link = story.image {
                 imageView.downloadedFrom(link: link)
             }else {
                 print("imageUrlin storie is empty")
             }
             /// TODO: 此处存储图片使用了延时执行 使图片在进行保存前下载成功 后续需改进
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                let image = imageView.image
-                var documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                documentsPath.appendPathComponent("\(story.id).jpg")
-                var data = Data()
-                if let image = image?.jpegData(compressionQuality: 1.0) {
-                    data = image
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+//                let image = imageView.image
+//                var documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+//                documentsPath.appendPathComponent("\(story.id).jpg")
+//                var data = Data()
+//                if let image = image?.jpegData(compressionQuality: 1.0) {
+//                    data = image
+//                }
+////                let data = image!.jpegData(compressionQuality: 1.0)
+//                FileManager.default.createFile(atPath: documentsPath.path, contents: data, attributes: nil)
+//            }
+            _ = URLRequest(url: URL(string: story.image ?? "emptyLink")!)
+            let destination: DownloadRequest.Destination = { _, _ in
+                let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let fileURL = documentsURL.appendingPathComponent("\(story.id).jpg")
+            return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
+            }
+            AF.download(story.image ?? "empty", to: destination).downloadProgress { progress in
+                if progress.isFinished {
                 }
-//                let data = image!.jpegData(compressionQuality: 1.0)
-                FileManager.default.createFile(atPath: documentsPath.path, contents: data, attributes: nil)
-            }
+            }.responseData(completionHandler: { _ in})
         }
-        for TopStory in readTopStory() {
-            var imageView = UIImageView()
-            if let link = TopStory.image {
-                imageView.downloadedFrom(link: link)
-            }else {
-                print("imageUrl in storie is empty")
+        for topStory in readTopStory() {
+            _ = URLRequest(url: URL(string: topStory.image ?? "emptyLink")!)
+            let destination: DownloadRequest.Destination = { _, _ in
+                let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let fileURL = documentsURL.appendingPathComponent("\(topStory.id).jpg")
+            return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
             }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                let image = imageView.image
-                var documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                documentsPath.appendPathComponent("\(TopStory.id).jpg")
-                let data = image!.jpegData(compressionQuality: 1.0)
-                FileManager.default.createFile(atPath: documentsPath.path, contents: data, attributes: nil)
-            }
+            AF.download(topStory.image ?? "empty", to: destination).downloadProgress { progress in
+                if progress.isFinished {
+                    
+                    
+//                    TODO: 此处可能出现banner reloaddata时topImage数组溢出的可能性 需要后续观察
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        print(self.topImages)
+                        if readTopStory().last == topStory && readTopStory().count == 5 {
+                            postNotification("imageLoaded")
+                            print("图片存了\(self.topImages)")
+                        }
+                    }
+                }
+            }.responseData(completionHandler: { _ in})
         }
+
     }
     /// 读取某一篇文章对应的头图
     /// - Parameter id: 文章的ID
@@ -611,7 +721,7 @@ extension ViewController {
         if section == 0 {
             return bannerView
         }else {
-            var backView = UIView()
+            let backView = UIView()
             backView.backgroundColor = UIColor.white
             let line = UIView()
             backView.addSubview(line)
@@ -663,5 +773,6 @@ extension UITextView {
         contentOffset.y = -positiveTopOffset
     }
 }
+
 
 

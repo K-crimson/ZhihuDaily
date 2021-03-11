@@ -271,7 +271,7 @@ class TopController: UIViewController {
         })
         star.addTarget(self, action: #selector(addStar(_:)), for: .touchUpInside)
 
-
+    
 
 
         share.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)

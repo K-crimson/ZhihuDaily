@@ -37,7 +37,6 @@ class DetailController: UIViewController {
     var idPosition = 0
     var first = Bool()
     var formerAction = String()
-
     lazy var readView :FSPagerView = {
         return FSPagerView()
     }()
@@ -108,6 +107,7 @@ class DetailController: UIViewController {
         webPages.append(webPage0)
         webPages.append(webPage1)
         webPages.append(webPage2)
+
         webPage0.navigationDelegate = self
         webPage1.navigationDelegate = self
         webPage2.navigationDelegate = self
@@ -327,12 +327,7 @@ extension DetailController {
         downloadCommentsNumber(id)
     }
     
-//    TODO: 将复用机制中代码精简
-//    func loadNewPage(_ id:Int32) {
-//        let webPage = WKWebView()
-//        webPage.loadPage(id)
-//        webPage.navigationDelegate = self
-//    }
+//    TODO: 将复用机制中代码精简disp
     
     
     func readIds() {
