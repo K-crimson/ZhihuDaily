@@ -39,8 +39,6 @@ func readStory() -> [Story] {
 func readTopStory() -> [TopStory] {
     let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedObjectContext = appDelegate.persistentContainer.viewContext
-    
-    
     let entity: NSEntityDescription? =
         NSEntityDescription.entity(forEntityName: "TopStory", in: managedObjectContext)
     let request = NSFetchRequest<TopStory>(entityName: "TopStory")

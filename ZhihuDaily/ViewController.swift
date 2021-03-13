@@ -241,6 +241,10 @@ class ViewController: UIViewController {
         
         
         
+        //TODO: 将高度设为400符合大多数手机设备的需求 但需要适配iPad
+        let width = UIScreen.main.bounds.width
+        let height = 400
+        print("宽度是\(height)")
         mainTableView.addSubview(bannerView)
         bannerView.backgroundColor = .white
         bannerView.addSubview(banner)
@@ -248,12 +252,12 @@ class ViewController: UIViewController {
         bannerView.snp.makeConstraints({make -> Void in
             
             make.width.equalTo(mainTableView)
-            make.height.equalTo(400)
+            make.height.equalTo(height)
         })
         banner.snp.makeConstraints({make -> Void in
             
             make.width.equalTo(mainTableView)
-            make.height.equalTo(400)
+            make.height.equalTo(height)
         })
         pageControl.snp.makeConstraints({make -> Void in
             make.right.equalToSuperview().offset(-50)
@@ -725,10 +729,10 @@ extension ViewController {
             backView.backgroundColor = UIColor.white
             let line = UIView()
             backView.addSubview(line)
-            line.backgroundColor = .gray
+            line.backgroundColor = .lightGray
             line.snp.makeConstraints({make -> Void in
                 make.center.equalToSuperview()
-                make.height.equalTo(0.4)
+                make.height.equalTo(0.5)
                 make.right.equalToSuperview()
                 make.left.equalToSuperview().offset(80)
             })
