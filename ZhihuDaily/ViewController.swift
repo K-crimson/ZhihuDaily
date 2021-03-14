@@ -11,7 +11,7 @@ import Alamofire
 import SwiftyJSON
 import CoreData
 import FSPagerView
-import  ESPullToRefresh
+import ESPullToRefresh
 
 
 
@@ -58,13 +58,6 @@ class ViewController: UIViewController {
         topStories = readTopStory()
         loadData()
         storeImage()
-        mainTableView.reloadData()
-//        print("topis\(topStories)")
-//        banner.reloadData()
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-//            self.loadData()
-//            self.banner.reloadData()
-//        }
     }
     
     var imageLoaded = 0
@@ -72,11 +65,8 @@ class ViewController: UIViewController {
     
     
     @objc func reloadTopData() {
-//        if imageLoaded < 5 {
-            topStories = readTopStory()
-            loadData()
-            print(topImages)
-            print(topIds)
+        topStories = readTopStory()
+        loadData()
         banner.reloadData()
         mainTableView.reloadData()
 
@@ -280,7 +270,7 @@ class ViewController: UIViewController {
         do {
             mainTableView.snp.makeConstraints( { make -> Void in
                 make.width.equalToSuperview()
-                make.height.equalToSuperview()
+                make.height.equalToSuperview().offset(-100)
                 make.top.equalTo(navigationBar.snp.bottom)
             })
         }
@@ -307,6 +297,14 @@ class ViewController: UIViewController {
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloaddata), name: Notification.Name(rawValue: "newspaperLoaded"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloadDataAgain), name: Notification.Name(rawValue: "reloaded"), object: nil)
         
+        //TODO: 上滑刷新会有奇怪的卡顿
+        self.mainTableView.es.addInfiniteScrolling {
+            [unowned self] in
+            writePreviousStory()
+            mainTableView.reloadData()
+            self.mainTableView.es.stopLoadingMore()
+        }
+
         
         
         
@@ -645,7 +643,9 @@ extension ViewController {
                    } else {
                        date = String(dateNumber)
                    }
-                   dates.append("\(month)月\(date)日")
+                    if !dates.contains("\(month)月\(date)日") {
+                        dates.append("\(month)月\(date)日")
+                    }
                }
     }
     
@@ -748,6 +748,7 @@ extension ViewController {
                 make.width.equalTo(80)
                 make.height.equalTo(10)
             })
+            print("日期是\(section)")
             return backView
         }
         
