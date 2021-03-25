@@ -60,21 +60,30 @@ class ViewController: UIViewController {
         storeImage()
     }
     
-    var imageLoaded = 0
-    
-    
-    
     @objc func reloadTopData() {
         topStories = readTopStory()
         loadData()
         banner.reloadData()
         mainTableView.reloadData()
-
+    }
+    
+    @objc func login() {
+        var logInPage = LoginController()
+        logInPage.modalTransitionStyle = .partialCurl
+        logInPage.modalPresentationStyle = .fullScreen
+        let transition = CATransition()
+        transition.duration = 0.3
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromRight
+        transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
+        view.window!.layer.add(transition, forKey: kCATransition)
+        
+        self.present(logInPage, animated: false, completion: nil)
     }
     
     
     override func viewDidLoad() {
-        
+//
         
         super.viewDidLoad()
         
@@ -228,7 +237,7 @@ class ViewController: UIViewController {
         
         profileButton.setImage(UIImage(named: "profile"), for: .normal)
         profileButton.imageView?.makeViewRoundCorner(2)
-        
+        profileButton.addTarget(self, action: #selector(login), for: .touchUpInside)
         
         
         //TODO: 将高度设为400符合大多数手机设备的需求 但需要适配iPad
@@ -277,17 +286,19 @@ class ViewController: UIViewController {
         mainTableView.delegate = self
         mainTableView.dataSource = self
         mainTableView.separatorStyle = .none
-        mainTableView.contentInsetAdjustmentBehavior = .never
+//        mainTableView.contentInsetAdjustmentBehavior = .never
         mainTableView.backgroundColor = .white
 ////
         writeLatestStory()
         writePreviousStory()
+        for top in topStories {
+            print(top.title)
+        }
 //            deleteAllStory()
 //            deleteAllTop()
 
         loadData()
         storeImage()
-        
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name(rawValue: "previousLoaded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "imageLoaded"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "topLoaded"), object: nil)
@@ -303,6 +314,8 @@ class ViewController: UIViewController {
             writePreviousStory()
             mainTableView.reloadData()
             self.mainTableView.es.stopLoadingMore()
+            
+
         }
 
         

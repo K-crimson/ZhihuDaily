@@ -186,6 +186,7 @@ class TopController: UIViewController {
             make.height.equalTo(70)
         })
 
+        let width = UIScreen.main.bounds.width
 
         detailPage.addSubview(readView)
 
@@ -204,7 +205,7 @@ class TopController: UIViewController {
         bottomBar.addSubview(backButton)
         backButton.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
-            make.left.equalToSuperview().offset(10)
+            make.centerX.equalTo(bottomBar.snp.left).offset(width/11)
             make.size.equalTo(bottomBar.snp.height)
         })
         backButton.tintColor = .black
@@ -214,7 +215,7 @@ class TopController: UIViewController {
         line.backgroundColor = .gray
         line.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
-            make.left.equalTo(backButton.snp.right)
+            make.left.equalTo(bottomBar.snp.left).offset(width / 6)
             make.height.equalToSuperview().offset(-30)
             make.width.equalTo(1)
         })
@@ -225,7 +226,7 @@ class TopController: UIViewController {
         comments.tintColor = .black
         comments.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
-            make.left.equalTo(line.snp.right)
+            make.left.equalTo(bottomBar.snp.left).offset(width / 4.6)
             make.size.equalTo(bottomBar.snp.height)
         })
 
@@ -246,7 +247,7 @@ class TopController: UIViewController {
         like.tintColor = .black
         like.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
-            make.left.equalTo(comments.snp.right)
+            make.left.equalTo(bottomBar.snp.left).offset(width / 2.5)
             make.size.equalTo(bottomBar.snp.height)
         })
         like.addTarget(self, action: #selector(addLike(_:)), for: .touchUpInside)
@@ -266,12 +267,12 @@ class TopController: UIViewController {
         star.tintColor = .black
         star.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
-            make.left.equalTo(like.snp.right)
+            make.left.equalTo(bottomBar.snp.centerX).offset(width / 12)
             make.size.equalTo(bottomBar.snp.height)
         })
         star.addTarget(self, action: #selector(addStar(_:)), for: .touchUpInside)
 
-    
+
 
 
         share.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
@@ -279,7 +280,7 @@ class TopController: UIViewController {
         share.tintColor = .black
         share.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
-            make.right.equalToSuperview().offset(-10)
+            make.left.equalTo(bottomBar.snp.centerX).offset(width / 3.7)
             make.size.equalTo(bottomBar.snp.height)
         })
     }

@@ -14,6 +14,7 @@
 		D122284F25BDB48A006B3471 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D122284E25BDB48A006B3471 /* Model.swift */; };
 		D125ECC125CECC7600DD0705 /* Story+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D125ECBF25CECC7600DD0705 /* Story+CoreDataClass.swift */; };
 		D125ECC225CECC7600DD0705 /* Story+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D125ECC025CECC7600DD0705 /* Story+CoreDataProperties.swift */; };
+		D12DEE73260B285900790596 /* LogInPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12DEE72260B285900790596 /* LogInPage.swift */; };
 		D15779C725BC45D600A94A50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15779C625BC45D600A94A50 /* AppDelegate.swift */; };
 		D15779CB25BC45D600A94A50 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15779CA25BC45D600A94A50 /* ViewController.swift */; };
 		D15779CE25BC45D600A94A50 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D15779CC25BC45D600A94A50 /* Main.storyboard */; };
@@ -32,6 +33,7 @@
 		D122284E25BDB48A006B3471 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		D125ECBF25CECC7600DD0705 /* Story+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Story+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		D125ECC025CECC7600DD0705 /* Story+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Story+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		D12DEE72260B285900790596 /* LogInPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInPage.swift; sourceTree = "<group>"; };
 		D15779C325BC45D600A94A50 /* ZhihuDaily.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZhihuDaily.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D15779C625BC45D600A94A50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D15779CA25BC45D600A94A50 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; wrapsLines = 1; };
@@ -102,6 +104,7 @@
 				D15779CA25BC45D600A94A50 /* ViewController.swift */,
 				D111F9D825D4C12700F00A34 /* DetaiPageController.swift */,
 				D1AFBAF825E69C5000A5B95A /* TopPageController.swift */,
+				D12DEE72260B285900790596 /* LogInPage.swift */,
 				D122284E25BDB48A006B3471 /* Model.swift */,
 				D15779CF25BC45D700A94A50 /* Assets.xcassets */,
 				D15779D125BC45D700A94A50 /* LaunchScreen.storyboard */,
@@ -231,6 +234,7 @@
 				D15779CB25BC45D600A94A50 /* ViewController.swift in Sources */,
 				D15779C725BC45D600A94A50 /* AppDelegate.swift in Sources */,
 				D1046D1A25D40FA3000C0F33 /* TopStory+CoreDataProperties.swift in Sources */,
+				D12DEE73260B285900790596 /* LogInPage.swift in Sources */,
 				D122284F25BDB48A006B3471 /* Model.swift in Sources */,
 				D125ECC125CECC7600DD0705 /* Story+CoreDataClass.swift in Sources */,
 				D111F9D925D4C12700F00A34 /* DetaiPageController.swift in Sources */,

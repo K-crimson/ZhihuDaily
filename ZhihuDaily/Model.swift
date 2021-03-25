@@ -102,17 +102,20 @@ func writeLatestStory () {
             }
             
             
-            let topstories = data["top_stories"].arrayValue
-            var topHasBeenAdded = false
-            for topstory in topstories {
-                for top in readTopStory() {
-                    if topstory["title"].stringValue == top.title {
-                        topHasBeenAdded = true
-                    }
+            let topStories = data["top_stories"].arrayValue
+            var topNeedToBeLoaded = false
+            var topTitles = [String]()
+            for top in readTopStory() {
+                topTitles.append(top.title ?? "error")
+            }
+            for topstory in topStories {
+                if !topTitles.contains(topstory["title"].stringValue) {
+                    topNeedToBeLoaded = true
                 }
             }
-            if !topHasBeenAdded {
-                for topstory in topstories {
+            if topNeedToBeLoaded {
+                deleteAllTop()
+                for topstory in topStories {
                     let newTopStory = NSEntityDescription.insertNewObject(forEntityName: "TopStory", into: managedObjectContext) as! TopStory
                     newTopStory.title = topstory["title"].stringValue
                     newTopStory.image = topstory["image"].stringValue
@@ -120,6 +123,7 @@ func writeLatestStory () {
                     newTopStory.hint = topstory["hint"].stringValue
                     newTopStory.id = topstory["id"].int32Value + 10000000
                 }
+                print("更新了")
                 postNotification("topLoaded")
             }
 
