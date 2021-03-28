@@ -308,10 +308,37 @@ func deleteAllTop() {
     
 }
 
+
+
+
 func postNotification(_ notification: String) {
     NotificationCenter.default.post(name: Notification.Name(notification), object: nil)
 }
 
+func deleteImages() {
+    let manager = FileManager.default
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    let fileArray = manager.subpaths(atPath: "\(documentsURL)")
+    print(fileArray)
+    if let files = fileArray {
+        for file in files {
 
+            do {
+                try manager.removeItem(atPath: "\(documentsURL)" + "/\(file)")
+            } catch {
+                print(error)
+            }
+
+        }
+    }
+    
+    
+    deleteAllStory()
+    deleteAllTop()
+    
+    writeLatestStory()
+    writePreviousStory()
+    
+}
 
 

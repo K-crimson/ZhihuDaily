@@ -12,4 +12,5 @@ target 'ZhihuDaily' do
   pod 'FSPagerView'
   pod 'Toast-Swift', '~> 5.0.1'
   pod "ESPullToRefresh"
+  pod 'NVActivityIndicatorView'
 end

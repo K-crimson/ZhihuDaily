@@ -289,14 +289,16 @@ class ViewController: UIViewController {
 //        mainTableView.contentInsetAdjustmentBehavior = .never
         mainTableView.backgroundColor = .white
 ////
-        writeLatestStory()
-        writePreviousStory()
-        for top in topStories {
-            print(top.title)
-        }
+//        writeLatestStory()
+//        writePreviousStory()
+        let manager = FileManager.default
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileArray = manager.subpaths(atPath: "\(documentsURL)")
+        print(documentsURL)
+        
+        //TODO 20210329 继续完成删除图片的操作 实现不删除图片文件夹而只清空文件夹
 //            deleteAllStory()
-//            deleteAllTop()
-
+//            deleteAllTop()        
         loadData()
         storeImage()
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name(rawValue: "previousLoaded"), object: nil)
@@ -767,6 +769,7 @@ extension ViewController {
         
     }
     
+
 }
 
 extension UIView {
