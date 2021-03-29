@@ -67,6 +67,15 @@ class ViewController: UIViewController {
         mainTableView.reloadData()
     }
     
+    @objc func reloadView() {
+        dates = []
+        topStories = []
+        stories.removeAll()
+        topImages = []
+        mainTableView.reloadData()
+    }
+    
+    
     @objc func login() {
         var logInPage = LoginController()
         logInPage.modalTransitionStyle = .partialCurl
@@ -240,10 +249,12 @@ class ViewController: UIViewController {
         profileButton.addTarget(self, action: #selector(login), for: .touchUpInside)
         
         
+        
+        
         //TODO: 将高度设为400符合大多数手机设备的需求 但需要适配iPad
         let width = UIScreen.main.bounds.width
         let height = 400
-        print("宽度是\(height)")
+        print("宽度是\(width)")
         mainTableView.addSubview(bannerView)
         bannerView.backgroundColor = .white
         bannerView.addSubview(banner)
@@ -289,24 +300,22 @@ class ViewController: UIViewController {
 //        mainTableView.contentInsetAdjustmentBehavior = .never
         mainTableView.backgroundColor = .white
 ////
-//        writeLatestStory()
-//        writePreviousStory()
-        let manager = FileManager.default
-        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let fileArray = manager.subpaths(atPath: "\(documentsURL)")
-        print(documentsURL)
+        writeLatestStory()
+        writePreviousStory()
         
-        //TODO 20210329 继续完成删除图片的操作 实现不删除图片文件夹而只清空文件夹
+                    
+
+        
 //            deleteAllStory()
 //            deleteAllTop()        
         loadData()
         storeImage()
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name(rawValue: "previousLoaded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "imageLoaded"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: Notification.Name(rawValue: "cacheCleared"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(changeToDark), name: Notification.Name(rawValue: "dark"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(changeToLight), name: Notification.Name(rawValue: "light"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "topLoaded"), object: nil)
-
-        
-
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloaddata), name: Notification.Name(rawValue: "newspaperLoaded"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloadDataAgain), name: Notification.Name(rawValue: "reloaded"), object: nil)
         
@@ -769,6 +778,7 @@ extension ViewController {
         
     }
     
+    
 
 }
 
@@ -795,5 +805,13 @@ extension UITextView {
     }
 }
 
+extension UIViewController {
+    @objc func changeToDark() {
+        self.overrideUserInterfaceStyle = .dark
+    }
+    @objc func changeToLight() {
+        self.overrideUserInterfaceStyle = .light
+    }
+}
 
 

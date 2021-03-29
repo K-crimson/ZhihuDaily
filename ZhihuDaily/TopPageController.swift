@@ -272,7 +272,8 @@ class TopController: UIViewController {
         })
         star.addTarget(self, action: #selector(addStar(_:)), for: .touchUpInside)
 
-
+        NotificationCenter.default.addObserver(self, selector: #selector(changeToDark), name: Notification.Name(rawValue: "dark"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(changeToLight), name: Notification.Name(rawValue: "light"), object: nil)
 
 
         share.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)

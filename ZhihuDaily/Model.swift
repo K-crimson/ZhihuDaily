@@ -239,9 +239,6 @@ func writePreviousStory () { //
                                 }
                             }
                          postNotification("previousLoaded")
-                         
-                         
-                         
                         }
                     case .failure(let json):
                         print(json.errorDescription)
@@ -315,30 +312,34 @@ func postNotification(_ notification: String) {
     NotificationCenter.default.post(name: Notification.Name(notification), object: nil)
 }
 
-func deleteImages() {
+func deleteCaches() {
     let manager = FileManager.default
-    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-    let fileArray = manager.subpaths(atPath: "\(documentsURL)")
-    print(fileArray)
-    if let files = fileArray {
-        for file in files {
-
-            do {
-                try manager.removeItem(atPath: "\(documentsURL)" + "/\(file)")
-            } catch {
-                print(error)
-            }
-
+    let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
+    var fileArray = [String]()
+    do {
+        try  fileArray = manager.subpathsOfDirectory(atPath: documentsPath)
+    } catch {
+        print("文件错误\(error)")
+    }
+    
+    for file in fileArray {
+        do {
+            try manager.removeItem(atPath: "\(documentsPath)" + "/\(file)")
+        } catch {
+            print(error)
         }
     }
     
-    
     deleteAllStory()
     deleteAllTop()
-    
     writeLatestStory()
     writePreviousStory()
     
+    postNotification("cacheCleared")
+    
+    
+//    postNotification("imageLoaded")
 }
+
 
 

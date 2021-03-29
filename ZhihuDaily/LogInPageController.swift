@@ -33,20 +33,7 @@ class LoginController: UINavigationController {
     
     var signOutButton = UIButton()
     
-    @objc func setPage() {
-        let settingPage = settingController()
-        settingPage.modalTransitionStyle = .partialCurl
-        settingPage.modalPresentationStyle = .fullScreen
-        
-        let transition = CATransition()
-        transition.duration = 0.3
-        transition.type = CATransitionType.push
-        transition.subtype = CATransitionSubtype.fromRight
-        transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
-        view.window!.layer.add(transition, forKey: kCATransition)
-        
-        self.present(settingPage, animated: false, completion: nil)
-    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -151,6 +138,7 @@ class LoginController: UINavigationController {
         })
         nightButton.setImage(UIImage(systemName: "moon"), for: .normal)
         nightButton.setPreferredSymbolConfiguration(setConfig, forImageIn: .normal)
+        nightButton.addTarget(self, action: #selector(changeUserInterfaceStyle), for: .touchUpInside)
         nightLabel.snp.makeConstraints({make -> Void in
             make.top.equalTo(nightButton.snp.bottom).inset(width/19)
             make.centerX.equalTo(nightButton)
@@ -206,7 +194,8 @@ class LoginController: UINavigationController {
         signOutButton.addTarget(self, action: #selector(signOut), for: .touchUpInside)
         signOutButton.isHidden = true
         
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(changeToDark), name: Notification.Name(rawValue: "dark"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(changeToLight), name: Notification.Name(rawValue: "light"), object: nil)
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let managedObjectContext = appDelegate.persistentContainer.viewContext
@@ -253,10 +242,23 @@ class LoginController: UINavigationController {
             print(error)
         }
     }
-}
-
-
-extension LoginController {
+    
+    
+    @objc func setPage() {
+        let settingPage = settingController()
+        settingPage.modalTransitionStyle = .partialCurl
+        settingPage.modalPresentationStyle = .fullScreen
+        
+        let transition = CATransition()
+        transition.duration = 0.3
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromRight
+        transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
+        view.window!.layer.add(transition, forKey: kCATransition)
+        
+        self.present(settingPage, animated: false, completion: nil)
+    }
+    
     @objc func back() {
         let transition = CATransition()
         transition.duration = 0.3
@@ -305,6 +307,7 @@ extension LoginController {
         
         
         
+        
     }
     
     @objc func signOut() {
@@ -344,5 +347,11 @@ extension LoginController {
         }
     }
     
-    
+    @objc func changeUserInterfaceStyle() {
+        if overrideUserInterfaceStyle == .light {
+            postNotification("light")
+        } else {
+            postNotification("dark")
+        }
+    }
 }
