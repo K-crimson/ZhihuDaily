@@ -45,7 +45,7 @@ class LoginController: UINavigationController {
             make.size.equalToSuperview()
             make.center.equalToSuperview()
         })
-        loginView.backgroundColor = .white
+        loginView.backgroundColor = .systemBackground
         
         loginView.addSubview(loginTitle)
         loginTitle.text = "登录知乎日报"
@@ -60,7 +60,7 @@ class LoginController: UINavigationController {
         
         loginView.addSubview(subTitle)
         subTitle.text = "选择登录方式"
-        subTitle.textColor = .gray
+        subTitle.textColor = .systemGray
         subTitle.snp.makeConstraints({make -> Void in
             make.top.equalTo(loginTitle.snp.bottom)
             make.centerX.equalTo(loginTitle)
@@ -92,7 +92,7 @@ class LoginController: UINavigationController {
             make.left.equalToSuperview().offset(width/25)
         })
         backButton.setImage(UIImage(systemName: "chevron.compact.left"), for: .normal)
-        backButton.tintColor = .black
+        backButton.tintColor = UIColor(named: "TextColor")
         
 //        backButton.contentHorizontalAlignment = .fill
 //        backButton.contentVerticalAlignment = .fill
@@ -114,7 +114,7 @@ class LoginController: UINavigationController {
             make.size.equalTo(width/4)
         })
         setButton.setImage(UIImage(systemName: "gearshape"), for: .normal)
-        setButton.tintColor = .black
+        setButton.tintColor = UIColor(named: "TextColor")
         setButton.setPreferredSymbolConfiguration(setConfig, forImageIn: .normal)
         setButton.addTarget(self, action: #selector(setPage), for: .touchUpInside)
         setLabel.snp.makeConstraints({make -> Void in
@@ -130,7 +130,7 @@ class LoginController: UINavigationController {
         
         loginView.addSubview(nightButton)
         loginView.addSubview(nightLabel)
-        nightButton.tintColor = .black
+        nightButton.tintColor = UIColor(named: "TextColor")
         nightButton.snp.makeConstraints({make -> Void in
             make.bottom.equalToSuperview().offset(-height/8)
             make.centerX.equalToSuperview().offset(-width/5)
@@ -167,8 +167,6 @@ class LoginController: UINavigationController {
         })
         profile.frame.size = CGSize(width: width/3, height: width/3)
         profile.image = UIImage(named: "profile")
-//        profile.contentMode = .scaleAspectFit
-        profile.makeViewRoundCorner(0.73)
         profile.isHidden = true
         
         loginView.addSubview(userName)
@@ -178,6 +176,7 @@ class LoginController: UINavigationController {
             make.height.equalTo(20)
             make.centerX.equalToSuperview()
         })
+        userName.textColor = UIColor(named: "TextColor")
         userName.text = "知乎用户"
         userName.textAlignment = .center
         userName.font = UIFont.systemFont(ofSize: 20)
@@ -194,8 +193,7 @@ class LoginController: UINavigationController {
         signOutButton.addTarget(self, action: #selector(signOut), for: .touchUpInside)
         signOutButton.isHidden = true
         
-        NotificationCenter.default.addObserver(self, selector: #selector(changeToDark), name: Notification.Name(rawValue: "dark"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(changeToLight), name: Notification.Name(rawValue: "light"), object: nil)
+   
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let managedObjectContext = appDelegate.persistentContainer.viewContext
@@ -348,10 +346,10 @@ class LoginController: UINavigationController {
     }
     
     @objc func changeUserInterfaceStyle() {
-        if overrideUserInterfaceStyle == .light {
-            postNotification("light")
+        if view.window?.overrideUserInterfaceStyle == .light {
+            view.window?.overrideUserInterfaceStyle = .dark
         } else {
-            postNotification("dark")
+            view.window?.overrideUserInterfaceStyle = .light
         }
     }
 }

@@ -99,14 +99,14 @@ class ViewController: UIViewController {
         
         view.addSubview(mainTableView)
         view.addSubview(navigationBar)
-        
+        view.backgroundColor = .systemBackground
         navigationBar.snp.makeConstraints({make -> Void in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(100)
         })
-        navigationBar.backgroundColor = .white
+        navigationBar.backgroundColor = .systemBackground
         navigationBar.addSubview(navigationView)
         navigationView.snp.makeConstraints({make -> Void in
             make.size.equalToSuperview()
@@ -222,6 +222,10 @@ class ViewController: UIViewController {
         
         navigationDate.font = UIFont.systemFont(ofSize: 18, weight: .heavy)
         navigationMonth.font = UIFont.systemFont(ofSize: 12)
+        navigationDate.textColor = UIColor(named: "TextColor")
+        navigationMonth.textColor = UIColor(named: "TextColor")
+        
+        
         navigationView.addSubview(seperateLine)
         seperateLine.snp.makeConstraints({make -> Void in
             make.left.equalTo(navigationDate.snp.right).offset(15)
@@ -229,7 +233,7 @@ class ViewController: UIViewController {
             make.width.equalTo(1)
             make.height.equalTo(40)
         })
-        seperateLine.backgroundColor = .gray
+        seperateLine.backgroundColor = .systemGray
         navigationView.addSubview(navigationTitle)
         navigationTitle.snp.makeConstraints({make -> Void in
             make.left.equalTo(seperateLine).offset(12)
@@ -237,6 +241,7 @@ class ViewController: UIViewController {
         })
         navigationTitle.text = "知乎日报"
         navigationTitle.font = UIFont.systemFont(ofSize: 25, weight: .black)
+        navigationTitle.textColor = UIColor(named: "TextColor")
         navigationView.addSubview(profileButton)
         profileButton.snp.makeConstraints({make -> Void in
             make.right.equalToSuperview().offset(-20)
@@ -256,7 +261,7 @@ class ViewController: UIViewController {
         let height = 400
         print("宽度是\(width)")
         mainTableView.addSubview(bannerView)
-        bannerView.backgroundColor = .white
+        bannerView.backgroundColor = .systemBackground
         bannerView.addSubview(banner)
         bannerView.addSubview(pageControl)
         bannerView.snp.makeConstraints({make -> Void in
@@ -278,13 +283,13 @@ class ViewController: UIViewController {
         banner.register(FSPagerViewCell.self, forCellWithReuseIdentifier: "cell")
         banner.isInfinite = true
         banner.automaticSlidingInterval = 5
-//        banner.isHidden = true
+        banner.backgroundColor = .systemBackground
         pageControl.numberOfPages = 5
         pageControl.currentPage = 0
-        pageControl.setStrokeColor(.gray, for: .normal)
-        pageControl.setStrokeColor(.white, for: .selected)
-        pageControl.setFillColor(.gray, for: .normal)
-        pageControl.setFillColor(.white, for: .selected)
+        pageControl.setStrokeColor(.systemGray, for: .normal)
+        pageControl.setStrokeColor(.systemBackground, for: .selected)
+        pageControl.setFillColor(.systemGray, for: .normal)
+        pageControl.setFillColor(.systemBackground, for: .selected)
         
         
         do {
@@ -298,7 +303,7 @@ class ViewController: UIViewController {
         mainTableView.dataSource = self
         mainTableView.separatorStyle = .none
 //        mainTableView.contentInsetAdjustmentBehavior = .never
-        mainTableView.backgroundColor = .white
+        mainTableView.backgroundColor = .systemBackground
 ////
         writeLatestStory()
         writePreviousStory()
@@ -313,8 +318,6 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name(rawValue: "previousLoaded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "imageLoaded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: Notification.Name(rawValue: "cacheCleared"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(changeToDark), name: Notification.Name(rawValue: "dark"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(changeToLight), name: Notification.Name(rawValue: "light"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "topLoaded"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloaddata), name: Notification.Name(rawValue: "newspaperLoaded"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloadDataAgain), name: Notification.Name(rawValue: "reloaded"), object: nil)
@@ -406,7 +409,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         let identifer = "Cell"
         var cell = tableView.dequeueReusableCell(withIdentifier: identifer)
-        
+        cell?.backgroundColor = .systemBackground
         if cell == nil {
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: identifer)
         }
@@ -419,8 +422,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 
                 cell?.textLabel?.text = story.title
                 cell?.textLabel?.numberOfLines = 2
+                cell?.textLabel?.textColor = UIColor(named: "TextColor")
                 cell?.detailTextLabel?.text = story.hint
-                cell?.detailTextLabel?.textColor = .gray
+                cell?.detailTextLabel?.textColor = .systemGray
                 
                 let imageView = UIImageView(image: readImage(of: story.id))
                 imageView.frame.size = CGSize(width: 70, height: 70)
@@ -434,8 +438,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             
             cell?.textLabel?.text = story.title
             cell?.textLabel?.numberOfLines = 2
+            cell?.textLabel?.textColor = UIColor(named: "TextColor")
             cell?.detailTextLabel?.text = story.hint
-            cell?.detailTextLabel?.textColor = .gray
+            cell?.detailTextLabel?.textColor = .systemGray
             
             let imageView = UIImageView(image: readImage(of: story.id))
             imageView.frame.size = CGSize(width: 70, height: 70)
@@ -501,7 +506,7 @@ extension ViewController: FSPagerViewDelegate, FSPagerViewDataSource {
     /// - Parameters:
     func pagerView(_ pagerView: FSPagerView, cellForItemAt index: Int) -> FSPagerViewCell {
         let cell = pagerView.dequeueReusableCell(withReuseIdentifier: "cell", at: index)
-        
+        cell.backgroundColor = .systemBackground
         
         for view in cell.contentView.subviews {
             view.removeFromSuperview()
@@ -527,8 +532,8 @@ extension ViewController: FSPagerViewDelegate, FSPagerViewDataSource {
         })
 
 
-        hint.textColor = .gray
-        title.textColor = .white
+        hint.textColor = .systemGray
+        title.textColor = UIColor(named: "bannerColor")
         title.font = UIFont.systemFont(ofSize: 20, weight: .heavy)
         hint.snp.makeConstraints({make -> Void in
             make.width.equalToSuperview()
@@ -750,7 +755,7 @@ extension ViewController {
             return bannerView
         }else {
             let backView = UIView()
-            backView.backgroundColor = UIColor.white
+            backView.backgroundColor = .systemBackground
             let line = UIView()
             backView.addSubview(line)
             line.backgroundColor = .lightGray
@@ -765,7 +770,7 @@ extension ViewController {
             textView.setTitle(date, for: .normal)
             textView.setTitleColor(.gray, for: .normal)
             textView.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-            textView.backgroundColor = .white
+            textView.backgroundColor = .systemBackground
             textView.snp.makeConstraints({make -> Void in
                 make.centerY.equalToSuperview()
                 make.left.equalToSuperview()
@@ -805,13 +810,7 @@ extension UITextView {
     }
 }
 
-extension UIViewController {
-    @objc func changeToDark() {
-        self.overrideUserInterfaceStyle = .dark
-    }
-    @objc func changeToLight() {
-        self.overrideUserInterfaceStyle = .light
-    }
-}
+
+
 
 

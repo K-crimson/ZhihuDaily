@@ -229,8 +229,7 @@ class DetailController: UIViewController {
             make.size.equalTo(bottomBar.snp.height)
         })
         
-        NotificationCenter.default.addObserver(self, selector: #selector(changeToDark), name: Notification.Name(rawValue: "dark"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(changeToLight), name: Notification.Name(rawValue: "light"), object: nil)
+
     }
         
 }

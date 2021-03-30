@@ -46,7 +46,7 @@ class settingController: UINavigationController {
         let width = UIScreen.main.bounds.width
         let height = UIScreen.main.bounds.height
         view.addSubview(settingView)
-        settingView.backgroundColor = .white
+        settingView.backgroundColor = .systemBackground
         settingView.snp.makeConstraints({
             $0.size.equalToSuperview()
             $0.center.equalToSuperview()
@@ -59,7 +59,7 @@ class settingController: UINavigationController {
             make.left.equalToSuperview().offset(width/25)
         })
         backButton.setImage(UIImage(systemName: "chevron.compact.left"), for: .normal)
-        backButton.tintColor = .black
+        backButton.tintColor = UIColor(named: "TextColor")
         let configuration = UIImage.SymbolConfiguration(pointSize: 30, weight: .regular, scale: .large )
         backButton.setPreferredSymbolConfiguration(configuration, forImageIn: .normal)
         backButton.addTarget(self, action: #selector(back), for: .touchUpInside)
@@ -74,12 +74,11 @@ class settingController: UINavigationController {
         
         clearCache.setTitle("清除缓存", for: .normal)
         clearCache.titleLabel?.font = UIFont.systemFont(ofSize: width/20)
-        clearCache.setTitleColor(.black, for: .normal)
+        clearCache.setTitleColor(UIColor(named: "TextColor"), for: .normal)
         clearCache.addTarget(self, action: #selector(warning), for: .touchUpInside)
         
         
-        NotificationCenter.default.addObserver(self, selector: #selector(changeToDark), name: Notification.Name(rawValue: "dark"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(changeToLight), name: Notification.Name(rawValue: "light"), object: nil)
+
         
         let manager = FileManager.default
         let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
@@ -115,6 +114,6 @@ class settingController: UINavigationController {
         })
         cacheSizeLabel.text = String(sizeString ?? "0") + " M"
         cacheSizeLabel.textAlignment = .center
-        cacheSizeLabel.textColor = .black
+        cacheSizeLabel.textColor = UIColor(named: "TextColor")
     }
 }
