@@ -36,6 +36,8 @@ func readStory() -> [Story] {
     return temp
 }
 
+/// 读取coredata中TopStory的内容
+/// - Returns: 返回topStory数组
 func readTopStory() -> [TopStory] {
     let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedObjectContext = appDelegate.persistentContainer.viewContext
@@ -68,7 +70,7 @@ func writeLatestStory () {
         case .success(let json):
             
             let data = JSON(json)
-            var date = data["date"].int32Value
+            let date = data["date"].int32Value
             var hasBeenAdded = false
             for story in readStory() {
                 if story.date == date {
@@ -134,7 +136,7 @@ func writeLatestStory () {
             }
             
         case .failure(let json):
-            print(json.errorDescription)
+            print(json.errorDescription ?? "JsonError")
         }
     }
     do {
@@ -165,7 +167,7 @@ func writePreviousStory () { //
             switch response.result {
             case .success(let json):
                 let data = JSON(json)
-                var date = data["date"].int32Value
+                let date = data["date"].int32Value
                 var hasBeenAdded = false
                 for story in readStory() {
                     if story.date == date {
@@ -194,7 +196,7 @@ func writePreviousStory () { //
                  postNotification("previousLoaded")
                 }
             case .failure(let json):
-                print(json.errorDescription)
+                print(json.errorDescription ?? "JsonError")
             }
             
 
@@ -205,14 +207,14 @@ func writePreviousStory () { //
             switch response.result {
             case .success(let json):
                 let data = JSON(json)
-                var date = data["date"].int32Value
+                let date = data["date"].int32Value
                 previousDate = String(date)
                 AF.request("https://news-at.zhihu.com/api/3/stories/before/\(previousDate)").responseJSON {
                     response in
                     switch response.result {
                     case .success(let json):
                         let data = JSON(json)
-                        var date = data["date"].int32Value
+                        let date = data["date"].int32Value
                         var hasBeenAdded = false
                         for story in readStory() {
                             if story.date == date {
@@ -241,13 +243,13 @@ func writePreviousStory () { //
                          postNotification("previousLoaded")
                         }
                     case .failure(let json):
-                        print(json.errorDescription)
+                        print(json.errorDescription ?? "JsonError")
                     }
                     
 
                 }
             case.failure(let json):
-                print(json.errorDescription)
+                print(json.errorDescription ?? "JsonError")
             }
         }
         
@@ -257,6 +259,7 @@ func writePreviousStory () { //
 }
 
 
+/// 清空coredata中Story部分
 func deleteAllStory() {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedObjectContext = appDelegate.persistentContainer.viewContext
@@ -276,11 +279,12 @@ func deleteAllStory() {
         let _:[AnyObject]? = try managedObjectContext.fetch(request)
     } catch {
         let error = error as NSError
+        print(error)
     }
     
 }
 
-
+/// 清空coredata中TopStory部分
 func deleteAllTop() {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedObjectContext = appDelegate.persistentContainer.viewContext
@@ -308,10 +312,13 @@ func deleteAllTop() {
 
 
 
+/// 发送通知
+/// - Parameter notification: notification的字符串
 func postNotification(_ notification: String) {
     NotificationCenter.default.post(name: Notification.Name(notification), object: nil)
 }
 
+/// 删除图片缓存
 func deleteCaches() {
     let manager = FileManager.default
     let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
@@ -338,7 +345,6 @@ func deleteCaches() {
     postNotification("cacheCleared")
     
     
-//    postNotification("imageLoaded")
 }
 
 

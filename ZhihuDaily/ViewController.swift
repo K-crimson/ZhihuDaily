@@ -12,6 +12,7 @@ import SwiftyJSON
 import CoreData
 import FSPagerView
 import ESPullToRefresh
+import NVActivityIndicatorView
 
 
 
@@ -31,11 +32,15 @@ class ViewController: UIViewController {
         return FSPageControl()
     }()
     
-    
+    // 获取屏幕宽度进行动态布局以及屏幕适配
+    let width = UIScreen.main.bounds.width
+
+    //设置主界面顶部的navigation Bar
     var navigationBar = UINavigationBar()
     var navigationView = UIView()
     var navigationTitle = UILabel()
     var navigationDate = UILabel()
+    var loadDateAnimation = NVActivityIndicatorView(frame: .zero, type: .ballRotateChase, color: UIColor(named: "TextColor"))
     var date = Int32()
     var navigationMonth = UILabel()
     var seperateLine = UIView()
@@ -44,7 +49,8 @@ class ViewController: UIViewController {
     
     
     var bannerView = UIView()
-    var container: NSPersistentContainer!
+    
+    var container: NSPersistentContainer!    
     var keys = [Int32]()                //将date存入数组中 作为TableView划分section的依据
     var stories = [Int32: [Story]]()   //对CoreData中的数据以date为key进行存储
     var dates = [String]()
@@ -54,12 +60,15 @@ class ViewController: UIViewController {
     var topHints = [String]()
     var topIds = [Int32]()
     
+    /// 在获取内容后刷新tableView的内容
     @objc func reloadData() {
         topStories = readTopStory()
         loadData()
         storeImage()
     }
     
+    
+    /// 在图像下载完毕后再次刷新
     @objc func reloadTopData() {
         topStories = readTopStory()
         loadData()
@@ -67,6 +76,8 @@ class ViewController: UIViewController {
         mainTableView.reloadData()
     }
     
+    
+    /// 在清除缓存后刷新
     @objc func reloadView() {
         dates = []
         topStories = []
@@ -76,8 +87,9 @@ class ViewController: UIViewController {
     }
     
     
+    /// 在点击头像后跳转登录界面
     @objc func login() {
-        var logInPage = LoginController()
+        let logInPage = LoginController()
         logInPage.modalTransitionStyle = .partialCurl
         logInPage.modalPresentationStyle = .fullScreen
         let transition = CATransition()
@@ -96,6 +108,13 @@ class ViewController: UIViewController {
         
         super.viewDidLoad()
         
+        var bannerHeight = CGFloat() //初始化以作为banner的高度值
+        
+        if width > 430 {
+            bannerHeight = width * 0.8
+        } else {
+            bannerHeight = 400
+        } //机型适配
         
         view.addSubview(mainTableView)
         view.addSubview(navigationBar)
@@ -114,6 +133,7 @@ class ViewController: UIViewController {
         })
         navigationView.addSubview(navigationDate)
         navigationView.addSubview(navigationMonth)
+        navigationView.addSubview(loadDateAnimation)
         navigationDate.snp.makeConstraints({make -> Void in
             make.left.equalToSuperview().offset(20)
             make.centerY.equalToSuperview().offset(6)
@@ -124,8 +144,15 @@ class ViewController: UIViewController {
             make.centerY.equalTo(navigationDate).offset(20)
             make.height.equalToSuperview()
         })
+        loadDateAnimation.snp.makeConstraints({
+            $0.centerY.equalTo(navigationDate).offset(10)
+            $0.left.equalToSuperview().offset(18)
+            $0.size.equalTo(30)
+        })
+        // 设置顶部navigationBar的动态布局
         
         date = 0
+        loadDateAnimation.startAnimating()
         AF.request("https://news-at.zhihu.com/api/3/news/latest").responseJSON { [self]
             response in
             switch response.result {
@@ -172,6 +199,7 @@ class ViewController: UIViewController {
                 } else {
                     navigationDate.text = String((date % 100))
                 }
+                loadDateAnimation.stopAnimating()
             case .failure(let json):
                 print(json.errorDescription!)
                 
@@ -217,8 +245,10 @@ class ViewController: UIViewController {
                 } else {
                     navigationDate.text = String((date % 100))
                 }
+                loadDateAnimation.stopAnimating()
             }
         }
+        // 刷新左上角的日期
         
         navigationDate.font = UIFont.systemFont(ofSize: 18, weight: .heavy)
         navigationMonth.font = UIFont.systemFont(ofSize: 12)
@@ -228,7 +258,7 @@ class ViewController: UIViewController {
         
         navigationView.addSubview(seperateLine)
         seperateLine.snp.makeConstraints({make -> Void in
-            make.left.equalTo(navigationDate.snp.right).offset(15)
+            make.left.equalToSuperview().offset(60)
             make.centerY.equalTo(navigationDate).offset(10)
             make.width.equalTo(1)
             make.height.equalTo(40)
@@ -256,10 +286,7 @@ class ViewController: UIViewController {
         
         
         
-        //TODO: 将高度设为400符合大多数手机设备的需求 但需要适配iPad
-        let width = UIScreen.main.bounds.width
-        let height = 400
-        print("宽度是\(width)")
+        
         mainTableView.addSubview(bannerView)
         bannerView.backgroundColor = .systemBackground
         bannerView.addSubview(banner)
@@ -267,12 +294,12 @@ class ViewController: UIViewController {
         bannerView.snp.makeConstraints({make -> Void in
             
             make.width.equalTo(mainTableView)
-            make.height.equalTo(height)
+            make.height.equalTo(bannerHeight)
         })
         banner.snp.makeConstraints({make -> Void in
             
             make.width.equalTo(mainTableView)
-            make.height.equalTo(height)
+            make.height.equalTo(bannerHeight)
         })
         pageControl.snp.makeConstraints({make -> Void in
             make.right.equalToSuperview().offset(-50)
@@ -315,33 +342,20 @@ class ViewController: UIViewController {
 //            deleteAllTop()        
         loadData()
         storeImage()
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name(rawValue: "previousLoaded"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "imageLoaded"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: Notification.Name(rawValue: "cacheCleared"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name(rawValue: "previousLoaded"), object: nil)// 当首页文字内容加载好时进行刷新
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "imageLoaded"), object: nil)// 当图片下载好时再次刷新
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: Notification.Name(rawValue: "cacheCleared"), object: nil)// 清除缓存后再次刷新
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloadTopData), name: Notification.Name(rawValue: "topLoaded"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloaddata), name: Notification.Name(rawValue: "newspaperLoaded"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(reloadDataAgain), name: Notification.Name(rawValue: "reloaded"), object: nil)
         
-        //TODO: 上滑刷新会有奇怪的卡顿
         self.mainTableView.es.addInfiniteScrolling {
             [unowned self] in
             writePreviousStory()
             mainTableView.reloadData()
             self.mainTableView.es.stopLoadingMore()
-            
-
-        }
-
-        
-        
-        
+        } // 设置上拉刷新
     }
-    
-    override func viewDidLayoutSubviews() {
-        
-    }
-    
-    
 }
 
 
@@ -368,14 +382,17 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     
-    /// 设置cell的高度 将第一个cell的高度设置为400以用于占位
+    /// 设置cell的高度 将第一个cell的高度设置为banner的高度以用于占位
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 && indexPath.row == 0 {
-            return 400
+            if width > 430 {
+                return width * 0.8
+            } else {
+                return 400
+            }
         } else {
             return 100
         }
-        
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -415,7 +432,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         }
         if indexPath.section == 0 {
             if indexPath.row == 0 {
-                return cell!
+                return cell! // 第一列第一个section返回空cell以占位
             } else {
                 let index = indexPath.row - 1
                 let story = stories[keys[indexPath.section], default: []][index]
@@ -503,7 +520,6 @@ extension ViewController: FSPagerViewDelegate, FSPagerViewDataSource {
 
     
     /// 设置banner的内容
-    /// - Parameters:
     func pagerView(_ pagerView: FSPagerView, cellForItemAt index: Int) -> FSPagerViewCell {
         let cell = pagerView.dequeueReusableCell(withReuseIdentifier: "cell", at: index)
         cell.backgroundColor = .systemBackground
@@ -688,18 +704,6 @@ extension ViewController {
             }else {
                 print("imageUrlin storie is empty")
             }
-            /// TODO: 此处存储图片使用了延时执行 使图片在进行保存前下载成功 后续需改进
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//                let image = imageView.image
-//                var documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-//                documentsPath.appendPathComponent("\(story.id).jpg")
-//                var data = Data()
-//                if let image = image?.jpegData(compressionQuality: 1.0) {
-//                    data = image
-//                }
-////                let data = image!.jpegData(compressionQuality: 1.0)
-//                FileManager.default.createFile(atPath: documentsPath.path, contents: data, attributes: nil)
-//            }
             _ = URLRequest(url: URL(string: story.image ?? "emptyLink")!)
             let destination: DownloadRequest.Destination = { _, _ in
                 let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -722,7 +726,6 @@ extension ViewController {
                 if progress.isFinished {
                     
                     
-//                    TODO: 此处可能出现banner reloaddata时topImage数组溢出的可能性 需要后续观察
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         print(self.topImages)
                         if readTopStory().last == topStory && readTopStory().count == 5 {

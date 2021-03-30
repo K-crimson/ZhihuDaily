@@ -16,6 +16,8 @@ class settingController: UINavigationController {
     var clearCache = UIButton(type: .system)
     var cacheSizeLabel = UILabel()
     
+    
+    /// 返回登陆界面
     @objc func back() {
         let transition = CATransition()
         transition.duration = 0.3
@@ -26,6 +28,7 @@ class settingController: UINavigationController {
         dismiss(animated: false, completion: nil)
     }
     
+    /// 弹出确认清除缓存窗口
     @objc func warning() {
         let alertController = UIAlertController(title: nil, message: "确认清空缓存？", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -44,7 +47,6 @@ class settingController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let width = UIScreen.main.bounds.width
-        let height = UIScreen.main.bounds.height
         view.addSubview(settingView)
         settingView.backgroundColor = .systemBackground
         settingView.snp.makeConstraints({
@@ -105,6 +107,8 @@ class settingController: UINavigationController {
         formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = 2
         let sizeString = formatter.string(from: number)
+        
+        /// 读取缓存文件大小
         
         settingView.addSubview(cacheSizeLabel)
         cacheSizeLabel.snp.makeConstraints({

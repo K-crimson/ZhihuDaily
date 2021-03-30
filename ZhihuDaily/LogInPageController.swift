@@ -15,12 +15,13 @@ class LoginController: UINavigationController {
     
     var loginView = UIView()
     
+    
     var loginTitle = UILabel()
     var subTitle = UILabel()
     
     var zhihuLogin = UIButton()
-    var weiboLogin = UIButton()
-    var backButton = UIButton()
+    var weiboLogin = UIButton() //登录按钮
+    var backButton = UIButton() //返回按钮
     
     var setButton = UIButton()
     var setLabel = UILabel()
@@ -29,7 +30,7 @@ class LoginController: UINavigationController {
     
     var profile = UIImageView()
     var userName = UILabel()
-    var animateView = NVActivityIndicatorView(frame: .zero, type: .ballRotateChase, color: .black)
+    var animateView = NVActivityIndicatorView(frame: .zero, type: .ballRotateChase, color: .black) //登录时的加载动画
     
     var signOutButton = UIButton()
     
@@ -38,6 +39,7 @@ class LoginController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(loginView)
+        
         let width = UIScreen.main.bounds.width
         let height = UIScreen.main.bounds.height
 
@@ -67,9 +69,9 @@ class LoginController: UINavigationController {
             make.height.equalTo(height/20)
         })
         
+        
         loginView.addSubview(zhihuLogin)
         loginView.addSubview(weiboLogin)
-        
         zhihuLogin.setImage(UIImage(named: "zhihu"), for: .normal)
         weiboLogin.setImage(UIImage(named: "weibo"), for: .normal)
         zhihuLogin.snp.makeConstraints({make -> Void in
@@ -84,7 +86,7 @@ class LoginController: UINavigationController {
             make.size.equalTo(width/6.5)
         })
         weiboLogin.addTarget(self, action: #selector(login), for: .touchUpInside)
-
+        
         loginView.addSubview(backButton)
         backButton.snp.makeConstraints({make -> Void in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
@@ -149,10 +151,6 @@ class LoginController: UINavigationController {
         nightLabel.font = UIFont.systemFont(ofSize: 14, weight: .light)
         nightLabel.textAlignment = .center
         
-//        loginTitle.isHidden = true
-//        subTitle.isHidden = true
-//        zhihuLogin.isHidden = true
-//        weiboLogin.isHidden = true
         
         loginView.addSubview(animateView)
         animateView.snp.makeConstraints({make -> Void in
@@ -213,7 +211,7 @@ class LoginController: UINavigationController {
                 subTitle.isHidden = false
                 zhihuLogin.isHidden = false
                 weiboLogin.isHidden = false
-                let status = NSEntityDescription.insertNewObject(forEntityName: "Account", into: managedObjectContext)
+                NSEntityDescription.insertNewObject(forEntityName: "Account", into: managedObjectContext)
                 try managedObjectContext.save()
             } else {
                 let status = results as! [Account]
@@ -235,13 +233,14 @@ class LoginController: UINavigationController {
                 signOutButton.isHidden = false
                 }
             }
-            print("结果是\(results)")
         } catch {
             print(error)
         }
+        // 检测登录状态
     }
     
     
+    /// 跳转设置界面
     @objc func setPage() {
         let settingPage = settingController()
         settingPage.modalTransitionStyle = .partialCurl
@@ -257,6 +256,7 @@ class LoginController: UINavigationController {
         self.present(settingPage, animated: false, completion: nil)
     }
     
+    /// 返回主界面
     @objc func back() {
         let transition = CATransition()
         transition.duration = 0.3
@@ -267,6 +267,9 @@ class LoginController: UINavigationController {
         dismiss(animated: false, completion: nil)
     }
     
+    
+    
+    /// 通过切换界面实现伪登录效果
     @objc func login() {
         loginTitle.isHidden = true
         subTitle.isHidden = true
@@ -289,7 +292,6 @@ class LoginController: UINavigationController {
         request.fetchLimit = 1
         request.entity = entity
         
-        
         do {
             let results: [AnyObject]? = try managedObjectContext.fetch(request)
             
@@ -297,17 +299,16 @@ class LoginController: UINavigationController {
                 result.logStatus = true
             }
             try managedObjectContext.save()
-            print("结果是\(results)")
 
         } catch {
             print(error)
         }
         
-        
-        
+        /// 将coredata中登录状态设置为已登录
         
     }
     
+    /// 实现退出登录
     @objc func signOut() {
         profile.isHidden = true
         userName.isHidden = true
@@ -338,13 +339,15 @@ class LoginController: UINavigationController {
                 result.logStatus = false
             }
             try managedObjectContext.save()
-            print("结果是\(results)")
 
         } catch {
             print(error)
         }
+        // 将coredata中登录状态设置为未登录
     }
     
+    
+    /// 实现切换夜间模式功能
     @objc func changeUserInterfaceStyle() {
         if view.window?.overrideUserInterfaceStyle == .light {
             view.window?.overrideUserInterfaceStyle = .dark

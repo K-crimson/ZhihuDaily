@@ -131,7 +131,7 @@ class DetailController: UIViewController {
             make.width.equalToSuperview()
             make.height.equalTo(70)
         })
-        
+        bottomBar.backgroundColor = .systemBackground
         
         detailPage.addSubview(readView)
         
@@ -153,11 +153,11 @@ class DetailController: UIViewController {
             make.centerX.equalTo(bottomBar.snp.left).offset(width/11)
             make.size.equalTo(bottomBar.snp.height)
         })
-        backButton.tintColor = .black
+        backButton.tintColor = UIColor(named: "TextColor")
         backButton.addTarget(self, action: #selector(back), for: .touchUpInside)
 
         bottomBar.addSubview(line)
-        line.backgroundColor = .gray
+        line.backgroundColor = .systemGray
         line.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.left).offset(width / 6)
@@ -168,7 +168,7 @@ class DetailController: UIViewController {
 
         comments.setImage(UIImage(systemName: "bubble.right"), for: .normal)
         bottomBar.addSubview(comments)
-        comments.tintColor = .black
+        comments.tintColor = UIColor(named: "TextColor")
         comments.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.left).offset(width / 4.6)
@@ -184,12 +184,11 @@ class DetailController: UIViewController {
         })
         commentsNumber.text = "3"
         commentsNumber.font = UIFont.systemFont(ofSize: 10)
-        commentsNumber.tintColor = .black
-
+        commentsNumber.tintColor = UIColor(named: "TextColor")
 
         like.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
         bottomBar.addSubview(like)
-        like.tintColor = .black
+        like.tintColor = UIColor(named: "TextColor")
         like.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.left).offset(width / 2.5)
@@ -205,11 +204,11 @@ class DetailController: UIViewController {
         })
         likesNumber.number = 8
         likesNumber.font = UIFont.systemFont(ofSize: 8)
-        likesNumber.tintColor = .black
+        likesNumber.tintColor = UIColor(named: "TextColor")
 
         star.setImage(UIImage(systemName: "star"), for: .normal)
         bottomBar.addSubview(star)
-        star.tintColor = .black
+        star.tintColor = UIColor(named: "TextColor")
         star.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.centerX).offset(width / 12)
@@ -222,7 +221,7 @@ class DetailController: UIViewController {
 
         share.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
         bottomBar.addSubview(share)
-        share.tintColor = .black
+        share.tintColor = UIColor(named: "TextColor")
         share.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.centerX).offset(width / 3.7)
@@ -272,15 +271,15 @@ extension DetailController {
         button.isClicked.toggle()
         if !button.isClicked {
             button.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
-            button.tintColor = .black
+            button.tintColor = UIColor(named: "TextColor")
             likesNumber.number -= 1
-            likesNumber.textColor = .black
+            likesNumber.textColor = UIColor(named: "TextColor")
             self.view.makeToast("取消点赞", duration: 2.0, position: .center)
         } else if button.isClicked{
             button.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
-            button.tintColor = .blue
+            button.tintColor = .systemBlue
             likesNumber.number += 1
-            likesNumber.textColor = .blue
+            likesNumber.textColor = .systemBlue
             self.view.makeToast("点赞成功", duration: 2.0, position: .center)
         }
     }
@@ -289,11 +288,11 @@ extension DetailController {
         button.isClicked.toggle()
         if button.isClicked == false {
             button.setImage(UIImage(systemName: "star"), for: .normal)
-            button.tintColor = .black
+            button.tintColor = UIColor(named: "TextColor")
             self.view.makeToast("取消收藏", duration: 2.0, position: .center)
         } else if button.isClicked == true{
             button.setImage(UIImage(systemName: "star.fill"), for: .normal)
-            button.tintColor = .blue
+            button.tintColor = .systemBlue
             self.view.makeToast("收藏成功", duration: 2.0, position: .center)
         }
     }
@@ -323,7 +322,6 @@ extension DetailController {
         downloadCommentsNumber(id)
     }
     
-//    TODO: 将复用机制中代码精简disp
     
     
     func readIds() {
@@ -451,14 +449,14 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                     } else if index == 2 {
                         if formerAction == "left" {
                             id = ids[(ids.firstIndex(of: id) ?? 0) + 3]
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[1] = webPage
                         } else {
                             id = ids[(ids.firstIndex(of: id) ?? 0) + 1]
                             print(id)
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.navigationDelegate = self
                             webPage.loadPage(id)
                             webPages[1] = webPage
@@ -478,21 +476,21 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                             } else {
                                 id = ids[(ids.firstIndex(of: id) ?? 0) - 2]
                             }
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[1] = webPage
                             first = false
                         } else if first == false {
                             id = ids[(ids.firstIndex(of: id) ?? 0) - 1]
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[1] = webPage
                         } else if formerAction == "right" {
                             id = ids[(ids.firstIndex(of: id) ?? 0) - 3]
                             print("first\(id)")
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[1] = webPage
@@ -506,14 +504,14 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                                 id = ids[(ids.firstIndex(of: id) ?? 0) - 3]
                             }
                             print(id)
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[2] = webPage
                         } else {
                             id = ids[(ids.firstIndex(of: id) ?? 0) - 1]
                             print(id)
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[2] = webPage
@@ -523,14 +521,14 @@ extension DetailController: FSPagerViewDelegate,FSPagerViewDataSource {
                         if formerAction == "right" {
                             id = ids[(ids.firstIndex(of: id) ?? 0) - 3]
                             print(id)
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[0] = webPage
                         } else {
                             id = ids[(ids.firstIndex(of: id) ?? 0) - 1]
                             print(id)
-                            var webPage = WKWebView()
+                            let webPage = WKWebView()
                             webPage.loadPage(id)
                             webPage.navigationDelegate = self
                             webPages[0] = webPage

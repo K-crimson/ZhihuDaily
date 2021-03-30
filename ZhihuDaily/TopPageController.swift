@@ -14,131 +14,6 @@ import CoreData
 import FSPagerView
 import WebKit
 
-//class  TopController: DetailController {
-//    var TopIds = [Int32]()
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        for story in readTopStory() {
-//            TopIds.append(story.id)
-//        }
-//        view.addSubview(detailPage)
-//        detailPage.snp.makeConstraints({make -> Void in
-//            make.size.equalToSuperview()
-//            make.center.equalToSuperview()
-//        })
-//        detailPage.backgroundColor = .white
-//        detailPage.addSubview(bottomBar)
-//        bottomBar.snp.makeConstraints({make -> Void in
-//            make.bottom.equalToSuperview()
-//            make.width.equalToSuperview()
-//            make.height.equalTo(70)
-//        })
-//
-//
-//        detailPage.addSubview(readView)
-//
-//        readView.snp.makeConstraints({
-//            $0.width.equalToSuperview()
-//            $0.bottom.equalTo(bottomBar.snp.top)
-//            $0.top.equalToSuperview()
-//        })
-//
-//        readView.delegate = self
-//        readView.dataSource = self
-//        readView.register(FSPagerViewCell.self, forCellWithReuseIdentifier: "readView")
-//        readView.isInfinite = true
-//
-//        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-//        bottomBar.addSubview(backButton)
-//        backButton.snp.makeConstraints({make -> Void in
-//            make.centerY.equalToSuperview()
-//            make.left.equalToSuperview().offset(10)
-//            make.size.equalTo(bottomBar.snp.height)
-//        })
-//        backButton.tintColor = .black
-//        backButton.addTarget(self, action: #selector(back), for: .touchUpInside)
-//
-//        bottomBar.addSubview(line)
-//        line.backgroundColor = .gray
-//        line.snp.makeConstraints({make -> Void in
-//            make.centerY.equalToSuperview()
-//            make.left.equalTo(backButton.snp.right)
-//            make.height.equalToSuperview().offset(-30)
-//            make.width.equalTo(1)
-//        })
-//
-//
-//        comments.setImage(UIImage(systemName: "bubble.right"), for: .normal)
-//        bottomBar.addSubview(comments)
-//        comments.tintColor = .black
-//        comments.snp.makeConstraints({make -> Void in
-//            make.centerY.equalToSuperview()
-//            make.left.equalTo(line.snp.right)
-//            make.size.equalTo(bottomBar.snp.height)
-//        })
-//
-//
-//        bottomBar.addSubview(commentsNumber)
-//        commentsNumber.snp.makeConstraints({make -> Void in
-//            make.centerX.equalTo(comments).offset(19)
-//            make.centerY.equalTo(comments).offset(-10)
-//            make.size.equalTo(20)
-//        })
-//        commentsNumber.text = "3"
-//        commentsNumber.font = UIFont.systemFont(ofSize: 10)
-//        commentsNumber.tintColor = .black
-//
-//
-//        like.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
-//        bottomBar.addSubview(like)
-//        like.tintColor = .black
-//        like.snp.makeConstraints({make -> Void in
-//            make.centerY.equalToSuperview()
-//            make.left.equalTo(comments.snp.right)
-//            make.size.equalTo(bottomBar.snp.height)
-//        })
-//        like.addTarget(self, action: #selector(addLike(_:)), for: .touchUpInside)
-//
-//        bottomBar.addSubview(likesNumber)
-//        likesNumber.snp.makeConstraints({make -> Void in
-//            make.centerX.equalTo(like).offset(15)
-//            make.centerY.equalTo(like).offset(-10)
-//            make.size.equalTo(20)
-//        })
-//        likesNumber.number = 8
-//        likesNumber.font = UIFont.systemFont(ofSize: 8)
-//        likesNumber.tintColor = .black
-//
-//        star.setImage(UIImage(systemName: "star"), for: .normal)
-//        bottomBar.addSubview(star)
-//        star.tintColor = .black
-//        star.snp.makeConstraints({make -> Void in
-//            make.centerY.equalToSuperview()
-//            make.left.equalTo(like.snp.right)
-//            make.size.equalTo(bottomBar.snp.height)
-//        })
-//        star.addTarget(star, action: #selector(BannerButton.addStar(_:)), for: .touchUpInside)
-//
-//
-//
-//
-//        share.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
-//        bottomBar.addSubview(share)
-//        share.tintColor = .black
-//        share.snp.makeConstraints({make -> Void in
-//            make.centerY.equalToSuperview()
-//            make.right.equalToSuperview().offset(-10)
-//            make.size.equalTo(bottomBar.snp.height)
-//        })
-//
-//    }
-////    override func loadPage(_ id: Int32) {
-////        <#code#>
-////    }
-//}
-
-
-
 class TopController: UIViewController {
     var id = Int32()
     var ids = [Int32]()
@@ -180,6 +55,7 @@ class TopController: UIViewController {
         })
         detailPage.backgroundColor = .white
         detailPage.addSubview(bottomBar)
+        bottomBar.backgroundColor = .systemBackground
         bottomBar.snp.makeConstraints({make -> Void in
             make.bottom.equalToSuperview()
             make.width.equalToSuperview()
@@ -208,11 +84,11 @@ class TopController: UIViewController {
             make.centerX.equalTo(bottomBar.snp.left).offset(width/11)
             make.size.equalTo(bottomBar.snp.height)
         })
-        backButton.tintColor = .black
+        backButton.tintColor = UIColor(named: "TextColor")
         backButton.addTarget(self, action: #selector(back), for: .touchUpInside)
 
         bottomBar.addSubview(line)
-        line.backgroundColor = .gray
+        line.backgroundColor = .systemGray
         line.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.left).offset(width / 6)
@@ -223,7 +99,7 @@ class TopController: UIViewController {
 
         comments.setImage(UIImage(systemName: "bubble.right"), for: .normal)
         bottomBar.addSubview(comments)
-        comments.tintColor = .black
+        comments.tintColor = UIColor(named: "TextColor")
         comments.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.left).offset(width / 4.6)
@@ -239,12 +115,12 @@ class TopController: UIViewController {
         })
         commentsNumber.text = "3"
         commentsNumber.font = UIFont.systemFont(ofSize: 10)
-        commentsNumber.tintColor = .black
+        commentsNumber.tintColor = UIColor(named: "TextColor")
 
 
         like.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
         bottomBar.addSubview(like)
-        like.tintColor = .black
+        like.tintColor = UIColor(named: "TextColor")
         like.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.left).offset(width / 2.5)
@@ -260,11 +136,11 @@ class TopController: UIViewController {
         })
         likesNumber.number = 8
         likesNumber.font = UIFont.systemFont(ofSize: 8)
-        likesNumber.tintColor = .black
+        likesNumber.tintColor = UIColor(named: "TextColor")
 
         star.setImage(UIImage(systemName: "star"), for: .normal)
         bottomBar.addSubview(star)
-        star.tintColor = .black
+        star.tintColor = UIColor(named: "TextColor")
         star.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.centerX).offset(width / 12)
@@ -277,7 +153,7 @@ class TopController: UIViewController {
 
         share.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
         bottomBar.addSubview(share)
-        share.tintColor = .black
+        share.tintColor = UIColor(named: "TextColor")
         share.snp.makeConstraints({make -> Void in
             make.centerY.equalToSuperview()
             make.left.equalTo(bottomBar.snp.centerX).offset(width / 3.7)
@@ -320,15 +196,15 @@ extension TopController {
         button.isClicked.toggle()
         if !button.isClicked {
             button.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
-            button.tintColor = .black
+            button.tintColor = UIColor(named: "TextColor")
             likesNumber.number -= 1
-            likesNumber.textColor = .black
+            likesNumber.textColor = UIColor(named: "TextColor")
             self.view.makeToast("取消点赞", duration: 2.0, position: .center)
         } else if button.isClicked{
             button.setImage(UIImage(systemName: "hand.thumbsup.fill"), for: .normal)
-            button.tintColor = .blue
+            button.tintColor = .systemBlue
             likesNumber.number += 1
-            likesNumber.textColor = .blue
+            likesNumber.textColor = .systemBlue
             self.view.makeToast("点赞成功", duration: 2.0, position: .center)
         }
     }
@@ -341,28 +217,17 @@ extension TopController {
             self.view.makeToast("取消收藏", duration: 2.0, position: .center)
         } else if button.isClicked == true{
             button.setImage(UIImage(systemName: "star.fill"), for: .normal)
-            button.tintColor = .blue
+            button.tintColor = .systemBlue
             self.view.makeToast("收藏成功", duration: 2.0, position: .center)
 
         }
     }
 
     func loadPage() {
-        var position = ids.firstIndex(of: id) ?? 0
-        var adjust = ids[position...4]
+        let position = ids.firstIndex(of: id) ?? 0
+        let adjust = ids[position...4]
         ids.removeLast(5 - position)
         ids.insert(contentsOf: adjust, at: 0)
-        
-//        var equal = false
-//        for idNumber in ids {
-//            if idNumber == id {
-//                equal = true
-//            }
-//
-//            if equal {
-//                ids.remo
-//            }
-//        }
         
         
         for x in 0...4 {
@@ -384,12 +249,12 @@ extension TopController {
             switch response.result {
             case .success(let json):
                 let data = JSON(json)
-                var comments = data["comments"].stringValue
-                var likes = data["popularity"].intValue
+                let comments = data["comments"].stringValue
+                let likes = data["popularity"].intValue
                 self.likesNumber.number = likes
                 self.commentsNumber.text = comments
             case .failure(let json):
-                print(json.errorDescription)
+                print(json.errorDescription!)
             }
         }
     }
